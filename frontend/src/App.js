@@ -19,7 +19,7 @@ class App extends Component {
     totalPage: 1,
     isMin: true,
     isMax: false,
-    sortModePrimary: "none",
+    sortMode: "none",
   }
   // ------------------------------------------------------------------
   //                        LOAD DATA
@@ -245,13 +245,13 @@ class App extends Component {
     // ------------------------------------------------------------------
 handleSorting = (event) => {
     this.setState({ 
-        sortModePrimary: event.target.value
+        sortMode: event.target.value
      });
 }
 componentDidUpdate(prevProps, prevState){
-  const {listWork, sortModePrimary} = this.state;
-  if(sortModePrimary !== prevState.sortModePrimary){
-      switch(sortModePrimary){
+  const {listWork, sortMode} = this.state;
+  if(sortMode !== prevState.sortMode){
+      switch(sortMode){
             case("increase"):
                this.setState({
                    listWork: listWork.sort((a,b) => a.name.localeCompare(b.name))
