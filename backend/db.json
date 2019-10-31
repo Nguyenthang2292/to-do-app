@@ -2,8 +2,8 @@
   "works": [
     {
       "id": "202ade90-faf6-11e9-b3d2-e5a754a3a548",
-      "name": "Ăn tối thôi",
-      "status": "hide"
+      "name": "nghỉ ngơi thôi",
+      "status": "show"
     },
     {
       "id": "24088df0-faf6-11e9-b3d2-e5a754a3a548",
@@ -59,6 +59,21 @@
       "id": "ee97ae00-fb89-11e9-abcd-65a3988653b9",
       "name": "Đi ăn lẩu",
       "status": "show"
+    },
+    {
+      "id": "24601c60-fbbd-11e9-83ad-b7ea5624fab7",
+      "name": "asfasfa",
+      "status": "show"
+    },
+    {
+      "id": "23c21cc0-fbbf-11e9-83ad-b7ea5624fab7",
+      "name": "dgfgdrfg",
+      "status": "show"
+    },
+    {
+      "id": "26938c40-fbbf-11e9-83ad-b7ea5624fab7",
+      "name": "dgfgdrfg",
+      "status": "hide"
     }
   ]
 }

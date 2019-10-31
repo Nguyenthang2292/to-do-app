@@ -11,8 +11,7 @@ class App extends Component {
     isSidePanelOpen: false,
     isCreateWork: true,
     isSearchMode: false,
-    name: '',
-    status: "show",
+    searchInputValue: '',
     listWork : [],
     listWorkSearch: [1],
     currentPage: 1,
@@ -26,6 +25,7 @@ class App extends Component {
   //                        LOAD DATA
   // ------------------------------------------------------------------
   getListWorkFromApi = async (page) => {
+    const {currentPage, totalPage} = this.state;
       await axios({
         method: 'get',
         url: 'http://localhost:8000/work/',
@@ -33,18 +33,19 @@ class App extends Component {
         headers: {'content-type': 'application/x-www-form-urlencoded;charset=utf-8'}
         }).then((res) => {
           console.log('Load data sucessfully... --> Message from Server: ', res);
+          const data = res.data.data;
           this.setState({
-            listWork: res.data.data.listWorkArr,
-            totalPageInit: res.data.data.totalPage,
-            totalPage: res.data.data.totalPage
+            listWork: data.listWorkArr,
+            totalPageInit: data.totalPage,
+            totalPage: data.totalPage
           });
-          if(res.data.data.totalPage === 1) this.setState({
+          if(data.totalPage === 1) this.setState({
             isMin: true,
             isMax: true});
-          if(res.data.data.totalPage > this.state.currentPage) this.setState({isMax: false})
-          if(res.data.data.totalPage < this.state.currentPage) {
-                this.getListWorkFromApi(this.state.totalPage); 
-                this.setState({currentPage: this.state.currentPage - 1})}
+          if(data.totalPage > currentPage) this.setState({isMax: false})
+          if(data.totalPage < currentPage) {
+                this.getListWorkFromApi(totalPage); 
+                this.setState({currentPage: currentPage - 1})}
         }).catch((err) => console.log(err));
     }
 
@@ -76,26 +77,23 @@ class App extends Component {
 //                        HANDLE SIDE PANEL
 // ------------------------------------------------------------------
   controlSidePanel = () => {
+    const {isSidePanelOpen} = this.state;
       this.setState({
-        isSidePanelOpen: !this.state.isSidePanelOpen
-      })
+        isSidePanelOpen: !isSidePanelOpen
+      });
   }
   closeSidePanel = () => {
+    const {isCreateWork} = this.state;
     this.setState({
       isSidePanelOpen: false
     });
-    if(!this.state.isCreateWork){
+    if(!isCreateWork){
         this.setState({isCreateWork: true})
     }
   }
 // ------------------------------------------------------------------
 //                       HANDLE PAGINATION
 // ------------------------------------------------------------------
-  getWorkInformation = (event) => {
-    this.setState({
-      [event.target.id] : event.target.value
-    });
-  }
   handlePagination = (event) => {
     let totalPage;
     (!this.state.isSearchMode) ? (totalPage = this.state.totalPageInit) : (totalPage = this.state.totalPage);
@@ -131,26 +129,23 @@ class App extends Component {
 // ------------------------------------------------------------------
 //                        CRUD WORK 
 // ------------------------------------------------------------------
-  createWork = async (event) => {
-    this.setState({
-        isSearchMode: false
-    })
-      event.preventDefault();
-      const requestBody ={
-        name: this.state.name, 
-        status: this.state.status 
-      }
+  createWork = async (data) => {
+      const {currentPage} = this.state;
+      this.setState({
+          isSearchMode: false
+      });
       await axios({
         method: 'post',
         url: 'http://localhost:8000/work/',
-        data: qs.stringify(requestBody),
+        data: qs.stringify(data),
         headers: {
           'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
         }}).then((res) => console.log('Add new work success !!! --> Message from Server: ', res.data.message))
           .catch((err) => console.log(err))
-      this.getListWorkFromApi(this.state.currentPage);
+      this.getListWorkFromApi(currentPage);
   }
   deleteWork = async (event) => {
+    const {currentPage} = this.state;
     this.setState({
         isSearchMode: false
     })
@@ -163,7 +158,7 @@ class App extends Component {
         'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
       }}).then((res) => console.log('Delete new work success !!! --> Message from Server: ', res.data.message))
         .catch((err) => console.log(err))
-    this.getListWorkFromApi(this.state.currentPage);
+    this.getListWorkFromApi(currentPage);
   }
   updateWork = (event) => {
     this.controlSidePanel();
@@ -175,18 +170,15 @@ class App extends Component {
      });
      sessionStorage.setItem("id", event.target.parentNode.parentNode.id);
   }
-  updateWorkSubmit = async (event) => {
-    event.preventDefault();
+  updateWorkSubmit = async (data) => {
+    const {currentPage} = this.state;
     const id = sessionStorage.getItem("id");
-    this.setState({ 
-        [event.target.id] : event.target.value
-     });
-     const requestBody = {
+    const requestBody = {
         id: id,
-        name: this.state.name, 
-        status: this.state.status
+        name: data.name, 
+        status: data.status
       }
-        await axios({
+    await axios({
             method: 'put',
             url: 'http://localhost:8000/work/',
             data: qs.stringify(requestBody),
@@ -194,8 +186,8 @@ class App extends Component {
             'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
             }}).then((res) => console.log('Update work success !!! --> Message from Server: ', res.data.message))
             .catch((err) => console.log(err))
-        this.getListWorkFromApi(this.state.currentPage);
-        this.setState({
+    this.getListWorkFromApi(currentPage);
+    this.setState({
             isSidePanelOpen: false,
             isCreateWork: true});
         sessionStorage.removeItem("id");
@@ -204,39 +196,47 @@ class App extends Component {
     //                        SEARCH WORK 
     // ------------------------------------------------------------------
     getPrimarySearchInformation = (event) => {
-       this.setState({
-           name: event.target.value,
-           isSearchMode: false,
-           totalPage: this.state.totalPageInit
+      const {totalPageInit} = this.state;
+      this.setState({
+          searchInputValue: event.target.value,
+          isSearchMode: false,
+          totalPage: totalPageInit
        });
     }
     primarySearch = (event) => {
-        event.preventDefault();
-        this.setState({
+      const {listWork, searchInputValue, listWorkSearch} = this.state;
+      event.preventDefault();
+      this.setState({
             isSearchMode: true,
-            listWorkSearch: this.state.listWork.filter((el) => el.name.includes(this.state.name)),
-            totalPage: (Math.ceil(this.state.listWorkSearch.length/10) === 0) ? 1 : Math.ceil(this.state.listWorkSearch.length/10)
+            listWorkSearch: listWork.filter((el) => el.name.includes(searchInputValue)),
+            totalPage: (Math.ceil(listWorkSearch.length/10) === 0) ? 1 : Math.ceil(listWorkSearch.length/10)
         });
     }
     getSecondarySearchInformation = (event) => {
-        if(event.target.value){
+      const {
+        listWork, 
+        listWorkSearch, 
+        searchInputValue, 
+        totalPage, 
+        totalPageInit} = this.state;
+      if(event.target.value){
             this.setState({
-                name: event.target.value,
-                isSearchMode: true,
-                listWorkSearch: this.state.listWork.filter((el) => el.name.includes(this.state.name)),
-                totalPage: (Math.ceil(this.state.listWorkSearch.length/10) === 0) ? 1 : Math.ceil(this.state.listWorkSearch.length/10)
+              searchInputValue: event.target.value,
+              isSearchMode: true,
+              listWorkSearch: listWork.filter((el) => el.name.includes(searchInputValue)),
+              totalPage: (Math.ceil(listWorkSearch.length/10) === 0) ? 1 : Math.ceil(listWorkSearch.length/10)
             })
-            if(this.state.totalPage === 1) {
-                this.setState({
-                    isMax: true
-                })
+            if(totalPage === 1) {
+              this.setState({
+                isMax: true
+              })
             }
         } else {
             this.setState({
-                name: "",
-                isSearchMode: false,
-                totalPage: this.state.totalPageInit ,
-                isMax: false
+              searchInputValue: "",
+              isSearchMode: false,
+              totalPage: totalPageInit ,
+              isMax: false
             })
         }
     }
@@ -249,54 +249,64 @@ handleSorting = (event) => {
      });
 }
 componentDidUpdate(prevProps, prevState){
-    if(this.state.sortModePrimary !== prevState.sortModePrimary){
-        switch(this.state.sortModePrimary){
+  const {listWork, sortModePrimary} = this.state;
+  if(sortModePrimary !== prevState.sortModePrimary){
+      switch(sortModePrimary){
             case("increase"):
                this.setState({
-                   listWork: this.state.listWork.sort((a,b) => a.name.localeCompare(b.name))
+                   listWork: listWork.sort((a,b) => a.name.localeCompare(b.name))
                });
                 break;
             case("decrease"):
                this.setState({
-                    listWork: this.state.listWork.sort((a,b) => b.name.localeCompare(a.name))
+                    listWork: listWork.sort((a,b) => b.name.localeCompare(a.name))
                });
                break;
             case("isActive"):
                this.setState({
-                   listWork: [...this.state.listWork.filter((el) => el.status === "show").sort((a,b) =>  a.name.localeCompare(b.name)),...this.state.listWork.filter((el) => el.status === "hide").sort((a,b) =>  a.name.localeCompare(b.name))]
+                   listWork: [...listWork.filter((el) => el.status === "show").sort((a,b) =>  a.name.localeCompare(b.name)),...listWork.filter((el) => el.status === "hide").sort((a,b) =>  a.name.localeCompare(b.name))]
                });
                break;
             case("isDisable"):
                 this.setState({
-                    listWork: [...this.state.listWork.filter((el) => el.status === "hide").sort((a,b) =>  a.name.localeCompare(b.name)),...this.state.listWork.filter((el) => el.status === "show").sort((a,b) =>  a.name.localeCompare(b.name))]
+                    listWork: [...listWork.filter((el) => el.status === "hide").sort((a,b) =>  a.name.localeCompare(b.name)),...listWork.filter((el) => el.status === "show").sort((a,b) =>  a.name.localeCompare(b.name))]
                 });
                 break;
             default: 
                 this.setState({
-                    listWork: this.state.listWork
+                    listWork: listWork
                 })
         }
-    this.renderListWork(this.state.listWork);
+    this.renderListWork(listWork);
     }
 }
   render(){
+    const {
+      currentPage, 
+      totalPage, 
+      isMax, 
+      isMin, 
+      isSearchMode, 
+      listWorkSearch, 
+      isCreateWork, 
+      isSidePanelOpen} = this.state;
     const MainPanel = <Main addWork={this.controlSidePanel}
                                 onClick={this.handlePagination}
                                 onChange={this.handleSorting}
                                 getPrimarySearchInformation={this.getPrimarySearchInformation}
                                 getSecondarySearchInformation={this.getSecondarySearchInformation}
                                 primarySearch={this.primarySearch}
-                                currentPage={this.state.currentPage}
-                                totalPage={this.state.totalPage}
-                                isMin={this.state.isMin}
-                                isMax={this.state.isMax}>
-                            {(!this.state.isSearchMode) ? this.renderListWork() : this.renderListWork(this.state.listWorkSearch)} 
+                                currentPage={currentPage}
+                                totalPage={totalPage}
+                                isMin={isMin}
+                                isMax={isMax}>
+                            {(!isSearchMode) ? this.renderListWork() : this.renderListWork(listWorkSearch)} 
                     </Main>
     return (
       <div className="container">
         <h1 className="row justify-content-center">Quản Lý Công Việc</h1>
         <div style={{height: '1px', backgroundColor: 'grey'}} className="mb-3"></div>
-          {(!this.state.isSidePanelOpen) 
+          {(!isSidePanelOpen) 
             ? (
               <div className="row">
                 <div className="col">
@@ -309,10 +319,9 @@ componentDidUpdate(prevProps, prevState){
                 <div className="col-4">
                   <Sidebar 
                     onClick={this.closeSidePanel}
-                    onSubmit={(this.state.isCreateWork) ? this.createWork : this.updateWorkSubmit}
-                    value={this.state.status}
+                    onSubmit={(isCreateWork) ? this.createWork : this.updateWorkSubmit}
                     onChange={this.getWorkInformation}
-                    placeholder={(this.state.isCreateWork) ? "" : this.state.name}
+                    placeholder={(isCreateWork) ? "" : this.state.name}
                   />
                 </div>
                 <div className="col-8">

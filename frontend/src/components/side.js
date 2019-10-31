@@ -1,6 +1,19 @@
 import React, {Component} from 'react';
 
 class Sidebar extends Component {
+    state = {
+        name: '',
+        status: "show"
+    }
+    getWorkInformation = (event) => {
+        this.setState({
+          [event.target.id] : event.target.value
+        });
+      }
+    onSubmit = (event) => {
+        event.preventDefault();
+        this.props.onSubmit(this.state);
+    }
     render(){
         return(
             <div className="card">
@@ -12,14 +25,14 @@ class Sidebar extends Component {
                     id="close-button"
                     onClick={this.props.onClick}></i>
                 </div>
-                <form className="card-body" onSubmit={this.props.onSubmit}>
+                <form className="card-body" onSubmit={this.onSubmit}>
                     <div className="form-group">
                         <label>Tên</label>
                         <input 
                         type="text" 
                         className="form-control" 
                         id="name"
-                        onChange={this.props.onChange}
+                        onChange={this.getWorkInformation}
                         placeholder={this.props.placeholder}
                         />
                     </div>
@@ -28,8 +41,7 @@ class Sidebar extends Component {
                           <select 
                             className="form-control" 
                             id="status" 
-                            onChange={this.props.onChange}
-                            value={this.props.value}>
+                            onChange={this.getWorkInformation}>
                             <option value="show">Kích hoạt</option>
                             <option value="hide">Ẩn</option>
                           </select>
