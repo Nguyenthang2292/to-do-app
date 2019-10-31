@@ -3,7 +3,7 @@
     {
       "id": "202ade90-faf6-11e9-b3d2-e5a754a3a548",
       "name": "Ăn tối thôi",
-      "status": "show"
+      "status": "hide"
     },
     {
       "id": "24088df0-faf6-11e9-b3d2-e5a754a3a548",
@@ -33,7 +33,7 @@
     {
       "id": "33bdb400-faf6-11e9-b3d2-e5a754a3a548",
       "name": "Học bài",
-      "status": "hide"
+      "status": "show"
     },
     {
       "id": "3a8c68d0-faf6-11e9-b3d2-e5a754a3a548",
