@@ -76,15 +76,9 @@ class App extends Component {
 //                        HANDLE SIDE PANEL
 // ------------------------------------------------------------------
   controlSidePanel = () => {
-    if (this.state.isSidePanelOpen) {
       this.setState({
-        isSidePanelOpen: false
-      });
-    } else {
-      this.setState({
-        isSidePanelOpen: true
-      });
-    }
+        isSidePanelOpen: !this.state.isSidePanelOpen
+      })
   }
   closeSidePanel = () => {
     this.setState({
