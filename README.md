@@ -11,7 +11,7 @@ Chức năng cơ bản của App:
 - Search / Search nhanh
 - Sort / Sort nhanh
 
-Version 2.0.0
+Version 2.0.0 (... tương lai)
 - Bổ sung chức năng Authentication / Authorization
 - Bổ sung Redux
 
