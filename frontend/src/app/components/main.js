@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
+import ListWork from './workList';
 
 const mapStateToProps = (state) => {
     return {
@@ -85,7 +86,7 @@ class Main extends Component{
                             </th>
                             <td></td>
                         </tr>
-                        {this.props.children}
+                        <ListWork />
                     </tbody>
                 </table>
                 <ul className="pagination">

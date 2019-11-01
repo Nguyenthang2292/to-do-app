@@ -48,6 +48,27 @@ const updateWork = (data) => {
     }
 }
 
+export const UPDATE_WORK_THUNK = (data) => {
+    return ((dispatch) => {
+        axios({
+            method: 'put',
+            url: 'http://localhost:8000/work/',
+            data: qs.stringify({
+                id: data.id,
+                name: data.name, 
+                status: data.status
+              }),
+            headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }}).then((res) => {
+                dispatch(updateWork(data));
+                console.log(res.status);
+            }).catch((err) => {
+                dispatch(onError(err.message))
+            })
+    })
+}
+
 const deleteWork = (data) => {
     return{
         type: DELETE_WORK,

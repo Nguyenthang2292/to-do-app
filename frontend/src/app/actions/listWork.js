@@ -21,7 +21,7 @@ export const LIST_WORK_THUNK = (page = 1) => {
         params: {page: page},
         headers: {'content-type': 'application/x-www-form-urlencoded;charset=utf-8'}
         }).then((res) => {
-          console.log('Load data sucessfully... --> Message from Server: ', res.status);
+          console.log('Load data sucessfully... --> Status:', res.status);
           const data = res.data.data;
           let state = {
             listWork : data.listWorkArr,
