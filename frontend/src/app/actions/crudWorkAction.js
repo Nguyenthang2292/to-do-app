@@ -28,7 +28,7 @@ export const CREATE_WORK_THUNK = (data) => {
               'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
             }}).then((res) => {
                 dispatch(createWork(data));
-                console.log(res.status);
+                console.log(res.data.message);
             }).catch((err) => {
                 dispatch(onError(err.message))
             })
@@ -46,6 +46,23 @@ const updateWork = (data) => {
             message: "Update Work Successfully..."
         }
     }
+}
+
+export const UPDATE_WORK_THUNK = (data) => {
+    return ((dispatch) => {
+        axios({
+            method: 'put',
+            url: 'http://localhost:8000/work/',
+            data: qs.stringify(data),
+            headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }}).then((res) => {
+                dispatch(updateWork(data));
+                console.log(res.data.message);
+            }).catch((err) => {
+                dispatch(onError(err.message))
+            })
+    })
 }
 
 const deleteWork = (data) => {

@@ -6,11 +6,11 @@ import Sidebar from './components/side';
 import Header from './components/header';
 import axios from 'axios';
 import qs from 'querystring';
-import { LIST_WORK_THUNK } from './actions/listWork';
+import { LIST_WORK_THUNK } from './actions/listWorkAction';
 
 const mapStateToProps = (state) => {
   return {
-    isSidePanelOpen: state.handleSidePanelReducer,
+    isSidePanelOpen: state.handleSidePanelReducer.isSidePanelOpen,
     listWork: state.listWorkReducer.listWork,
   } 
 }
@@ -34,26 +34,6 @@ class App extends Component {
   componentDidMount(){
       this.props.renderListWork();
   }
-
-  renderListWork = (list = this.props.listWork) => 
-    list.map((el,key) => 
-    <tr key ={el.id} id={el.id}>
-        <th scope="row">{key + 1}</th>
-        <td>{el.name}</td>
-        <td>
-        {(el.status === "show") ? 
-            <span className="badge badge-primary">
-                Đang hoạt động 
-            </span> : 
-            <span className="badge badge-secondary">
-                Chưa hoạt động 
-            </span>}
-        </td>
-        <td className="d-flex justify-content-center"> 
-            <button type="submit" className="btn btn-secondary btn-sm mr-2" onClick={this.deleteWork}><i className="fas fa-trash-alt"></i>&nbsp;&nbsp;Xóa</button> 
-            <button type="submit" className="btn btn-dark btn-sm" onClick={this.updateWork}><i className="fas fa-edit"></i>&nbsp;&nbsp;Sửa</button> 
-        </td>
-    </tr>)
 // ------------------------------------------------------------------
 //                       HANDLE PAGINATION
 // ------------------------------------------------------------------
@@ -108,38 +88,6 @@ class App extends Component {
         .catch((err) => console.log(err))
     // this.getListWorkFromApi(currentPage);
   }
-  updateWork = (event) => {
-    this.controlSidePanel();
-    this.setState({ 
-        name: event.target.parentNode.parentNode.childNodes[1].innerText,
-        isSidePanelOpen: true,
-        isCreateWork: false,
-        isSearchMode: false
-     });
-     sessionStorage.setItem("id", event.target.parentNode.parentNode.id);
-  }
-  updateWorkSubmit = async (data) => {
-    const {currentPage} = this.state;
-    const id = sessionStorage.getItem("id");
-    const requestBody = {
-        id: id,
-        name: data.name, 
-        status: data.status
-      }
-    await axios({
-            method: 'put',
-            url: 'http://localhost:8000/work/',
-            data: qs.stringify(requestBody),
-            headers: {
-            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
-            }}).then((res) => console.log('Update work success !!! --> Message from Server: ', res.data.message))
-            .catch((err) => console.log(err))
-    this.getListWorkFromApi(currentPage);
-    this.setState({
-            isSidePanelOpen: false,
-            isCreateWork: true});
-        sessionStorage.removeItem("id");
-    }
     // ------------------------------------------------------------------
     //                        SEARCH WORK 
     // ------------------------------------------------------------------
@@ -239,7 +187,7 @@ componentDidUpdate(prevProps, prevState){
                             getPrimarySearchInformation={this.getPrimarySearchInformation}
                             getSecondarySearchInformation={this.getSecondarySearchInformation}
                             primarySearch={this.primarySearch}>
-                            {(!isSearchMode) ? this.renderListWork() : this.renderListWork(listWorkSearch)} 
+                            {/* {(!isSearchMode) ? this.renderListWork() : this.renderListWork(listWorkSearch)}  */}
                     </Main>
     return (
       <div className="container">
@@ -258,7 +206,6 @@ componentDidUpdate(prevProps, prevState){
                   <Sidebar 
                     onSubmit={(isCreateWork) ? this.createWork : this.updateWorkSubmit}
                     onChange={this.getWorkInformation}
-                    placeholder={(isCreateWork) ? "" : this.state.name}
                   />
                 </div>
                 <div className="col-8">

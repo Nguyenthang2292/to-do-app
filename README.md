@@ -2,8 +2,8 @@
 CRUD Work App
 
 Version 1.0
-- Back-end: Nodejs/Lowdb/Port 8000: {start-server: ~/backend/nodemon index}
-- Front-end: React: {start-server: ~/frontend/npm start}
+- Back-end: Nodejs/ExpressJs/Lowdb - {start-server: ~/backend/nodemon index}
+- Front-end: React - {start-server: ~/frontend/npm start}
 + Chức năng cơ bản của App:
 - Hiển thị danh sách công việc từ Database/ Phân trang hiển thị (Mỗi trang 9 công việc)
 - Thêm/Sửa/Xóa công việc

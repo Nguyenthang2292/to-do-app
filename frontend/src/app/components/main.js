@@ -1,9 +1,12 @@
 import React, {Component} from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
+import ListWork from './listWork';
+import {switchPanel} from '../actions/handleSidePanelAction'
 
 const mapStateToProps = (state) => {
     return {
+        isSidePanelOpen: state.handleSidePanelReducer.isSidePanelOpen,
         currentPage: state.listWorkReducer.currentPage,
         totalPage: state.listWorkReducer.totalPage,
         isMin: state.listWorkReducer.isMin,
@@ -13,18 +16,22 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    handleSidePanel: () => dispatch({ type: 'SWITCH_PANEL' }),
+    handleSidePanel: (data) => dispatch(switchPanel(data)),
   }
 }
 
 class Main extends Component{
+    swtchPanel = () => {
+        this.props.handleSidePanel({isSidePanelOpen: this.props.isSidePanelOpen})
+    }
     render(){
+        console.log('main', this.props.isSidePanelOpen)
         return( 
             <div>
                 <div className="row mb-3 pl-3">
                     <button type="button" 
                         className="btn btn-dark"
-                        onClick={this.props.handleSidePanel}>
+                        onClick={this.swtchPanel}>
                         <i className="fas fa-plus"></i>
                         &nbsp;Thêm công việc
                     </button>
@@ -85,7 +92,7 @@ class Main extends Component{
                             </th>
                             <td></td>
                         </tr>
-                        {this.props.children}
+                        <ListWork />
                     </tbody>
                 </table>
                 <ul className="pagination">

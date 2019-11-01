@@ -1,7 +1,4 @@
-const initialState = {
-    isCreateWork: true
-}
-
+const initialState = {}
 const crudWorkReducer = (state = initialState, action) => {
     switch (action.type) {
         case "CREATE_WORK":
@@ -9,7 +6,6 @@ const crudWorkReducer = (state = initialState, action) => {
             return {state,...action.payload}
         case "UPDATE_WORK":
             console.log(action.payload);
-            state.isCreateWork = false;
             return {state,...action.payload}
         case "DELETE_WORK":
             console.log(action.payload);

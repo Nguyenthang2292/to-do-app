@@ -1,4 +1,4 @@
-import {onError} from './crudWork';
+import {onError} from './crudWorkAction';
 import axios from 'axios';
 
 const LIST_WORK ="LIST_WORK";
