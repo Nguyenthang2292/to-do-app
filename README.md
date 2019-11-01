@@ -12,7 +12,7 @@ Version 1.0
 - Sort / Sort nhanh
 
 Version 1.1 (1/11/2019)
-- Front-end: Quản lý State bằng Redux
+- Front-end: Quản lý State bằng Redux / Redux-thunk
 
 Version 2.0 (... tương lai)
 - Bổ sung chức năng Authentication / Authorization
