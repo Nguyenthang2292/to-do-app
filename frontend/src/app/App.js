@@ -1,59 +1,41 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import './App.css';
 import Main from './components/main';
 import Sidebar from './components/side';
+import Header from './components/header';
 import axios from 'axios';
 import qs from 'querystring';
+import { LIST_WORK_THUNK } from './actions/listWork';
 
+const mapStateToProps = (state) => {
+  return {
+    isSidePanelOpen: state.handleSidePanelReducer,
+    listWork: state.listWorkReducer.listWork,
+  } 
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return{
+    renderListWork: (data) => dispatch(LIST_WORK_THUNK(data))
+  }
+}
 
 class App extends Component {
   state = {
-    isSidePanelOpen: false,
-    isCreateWork: true,
     isSearchMode: false,
     searchInputValue: '',
-    listWork : [],
     listWorkSearch: [1],
-    currentPage: 1,
-    totalPageInit: 1,
-    totalPage: 1,
-    isMin: true,
-    isMax: false,
     sortMode: "none",
   }
   // ------------------------------------------------------------------
   //                        LOAD DATA
   // ------------------------------------------------------------------
-  getListWorkFromApi = async (page) => {
-    const {currentPage, totalPage} = this.state;
-      await axios({
-        method: 'get',
-        url: 'http://localhost:8000/work/',
-        params: {page: page},
-        headers: {'content-type': 'application/x-www-form-urlencoded;charset=utf-8'}
-        }).then((res) => {
-          console.log('Load data sucessfully... --> Message from Server: ', res);
-          const data = res.data.data;
-          this.setState({
-            listWork: data.listWorkArr,
-            totalPageInit: data.totalPage,
-            totalPage: data.totalPage
-          });
-          if(data.totalPage === 1) this.setState({
-            isMin: true,
-            isMax: true});
-          if(data.totalPage > currentPage) this.setState({isMax: false})
-          if(data.totalPage < currentPage) {
-                this.getListWorkFromApi(totalPage); 
-                this.setState({currentPage: currentPage - 1})}
-        }).catch((err) => console.log(err));
-    }
-
   componentDidMount(){
-      this.getListWorkFromApi(1);
+      this.props.renderListWork();
   }
 
-  renderListWork = (list = this.state.listWork) => 
+  renderListWork = (list = this.props.listWork) => 
     list.map((el,key) => 
     <tr key ={el.id} id={el.id}>
         <th scope="row">{key + 1}</th>
@@ -72,25 +54,6 @@ class App extends Component {
             <button type="submit" className="btn btn-dark btn-sm" onClick={this.updateWork}><i className="fas fa-edit"></i>&nbsp;&nbsp;Sửa</button> 
         </td>
     </tr>)
-
-// ------------------------------------------------------------------
-//                        HANDLE SIDE PANEL
-// ------------------------------------------------------------------
-  controlSidePanel = () => {
-    const {isSidePanelOpen} = this.state;
-      this.setState({
-        isSidePanelOpen: !isSidePanelOpen
-      });
-  }
-  closeSidePanel = () => {
-    const {isCreateWork} = this.state;
-    this.setState({
-      isSidePanelOpen: false
-    });
-    if(!isCreateWork){
-        this.setState({isCreateWork: true})
-    }
-  }
 // ------------------------------------------------------------------
 //                       HANDLE PAGINATION
 // ------------------------------------------------------------------
@@ -129,21 +92,6 @@ class App extends Component {
 // ------------------------------------------------------------------
 //                        CRUD WORK 
 // ------------------------------------------------------------------
-  createWork = async (data) => {
-      const {currentPage} = this.state;
-      this.setState({
-          isSearchMode: false
-      });
-      await axios({
-        method: 'post',
-        url: 'http://localhost:8000/work/',
-        data: qs.stringify(data),
-        headers: {
-          'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
-        }}).then((res) => console.log('Add new work success !!! --> Message from Server: ', res.data.message))
-          .catch((err) => console.log(err))
-      this.getListWorkFromApi(currentPage);
-  }
   deleteWork = async (event) => {
     const {currentPage} = this.state;
     this.setState({
@@ -158,7 +106,7 @@ class App extends Component {
         'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
       }}).then((res) => console.log('Delete new work success !!! --> Message from Server: ', res.data.message))
         .catch((err) => console.log(err))
-    this.getListWorkFromApi(currentPage);
+    // this.getListWorkFromApi(currentPage);
   }
   updateWork = (event) => {
     this.controlSidePanel();
@@ -209,7 +157,7 @@ class App extends Component {
       this.setState({
             isSearchMode: true,
             listWorkSearch: listWork.filter((el) => el.name.includes(searchInputValue)),
-            totalPage: (Math.ceil(listWorkSearch.length/10) === 0) ? 1 : Math.ceil(listWorkSearch.length/10)
+            totalPage: (Math.ceil(listWorkSearch.length/9) === 0) ? 1 : Math.ceil(listWorkSearch.length/9)
         });
     }
     getSecondarySearchInformation = (event) => {
@@ -224,7 +172,7 @@ class App extends Component {
               searchInputValue: event.target.value,
               isSearchMode: true,
               listWorkSearch: listWork.filter((el) => el.name.includes(searchInputValue)),
-              totalPage: (Math.ceil(listWorkSearch.length/10) === 0) ? 1 : Math.ceil(listWorkSearch.length/10)
+              totalPage: (Math.ceil(listWorkSearch.length/9) === 0) ? 1 : Math.ceil(listWorkSearch.length/9)
             })
             if(totalPage === 1) {
               this.setState({
@@ -282,31 +230,21 @@ componentDidUpdate(prevProps, prevState){
 }
   render(){
     const {
-      currentPage, 
-      totalPage, 
-      isMax, 
-      isMin, 
       isSearchMode, 
       listWorkSearch, 
-      isCreateWork, 
-      isSidePanelOpen} = this.state;
-    const MainPanel = <Main addWork={this.controlSidePanel}
-                                onClick={this.handlePagination}
-                                onChange={this.handleSorting}
-                                getPrimarySearchInformation={this.getPrimarySearchInformation}
-                                getSecondarySearchInformation={this.getSecondarySearchInformation}
-                                primarySearch={this.primarySearch}
-                                currentPage={currentPage}
-                                totalPage={totalPage}
-                                isMin={isMin}
-                                isMax={isMax}>
+      isCreateWork} = this.state;
+    const MainPanel = <Main 
+                            onClick={this.handlePagination}
+                            onChange={this.handleSorting}
+                            getPrimarySearchInformation={this.getPrimarySearchInformation}
+                            getSecondarySearchInformation={this.getSecondarySearchInformation}
+                            primarySearch={this.primarySearch}>
                             {(!isSearchMode) ? this.renderListWork() : this.renderListWork(listWorkSearch)} 
                     </Main>
     return (
       <div className="container">
-        <h1 className="row justify-content-center">Quản Lý Công Việc</h1>
-        <div style={{height: '1px', backgroundColor: 'grey'}} className="mb-3"></div>
-          {(!isSidePanelOpen) 
+        <Header />
+          {(!this.props.isSidePanelOpen) 
             ? (
               <div className="row">
                 <div className="col">
@@ -318,7 +256,6 @@ componentDidUpdate(prevProps, prevState){
               <div className="row">
                 <div className="col-4">
                   <Sidebar 
-                    onClick={this.closeSidePanel}
                     onSubmit={(isCreateWork) ? this.createWork : this.updateWorkSubmit}
                     onChange={this.getWorkInformation}
                     placeholder={(isCreateWork) ? "" : this.state.name}
@@ -334,4 +271,4 @@ componentDidUpdate(prevProps, prevState){
   }
 }
 
-export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);

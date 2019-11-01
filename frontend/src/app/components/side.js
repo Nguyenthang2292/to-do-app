@@ -1,9 +1,30 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {CREATE_WORK_THUNK} from '../actions/crudWork';
+import {LIST_WORK_THUNK} from '../actions/listWork';
+
+const mapStateToProps = (state) => {
+    return {
+        isCreateWork: state.crudWorkReducer.isCreateWork,
+        currentPage: state.listWorkReducer.currentPage
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+      closeSidePanel: () => dispatch({ type: 'CLOSE_PANEL'}),
+      createWork: (data) => dispatch(CREATE_WORK_THUNK(data)),
+      updateWork: () => dispatch({type: "UPDATE_WORK"}),
+      renderListWork: (data) => dispatch(LIST_WORK_THUNK(data))
+    }
+  }
 
 class Sidebar extends Component {
     state = {
         name: '',
-        status: "show"
+        status: "show",
+        isCreateWork: this.props.isCreateWork,
+        currentPage: this.props.currentPage,
     }
     getWorkInformation = (event) => {
         this.setState({
@@ -11,8 +32,16 @@ class Sidebar extends Component {
         });
       }
     onSubmit = (event) => {
+        const {name, status, isCreateWork} = this.state;
         event.preventDefault();
-        this.props.onSubmit(this.state);
+        if (isCreateWork) {
+            this.props.createWork({
+                name: name, 
+                status: status});
+            this.props.renderListWork({currentPage: this.state.currentPage});
+        } else {
+            this.props.updateWork();
+        }
     }
     render(){
         return(
@@ -23,7 +52,7 @@ class Sidebar extends Component {
                     className="fas fa-times-circle float-right" 
                     style={{lineHeight: '24px'}}
                     id="close-button"
-                    onClick={this.props.onClick}></i>
+                    onClick={this.props.closeSidePanel}></i>
                 </div>
                 <form className="card-body" onSubmit={this.onSubmit}>
                     <div className="form-group">
@@ -51,7 +80,7 @@ class Sidebar extends Component {
                            <i className="fas fa-plus"></i>
                             &nbsp;&nbsp;Lưu lại
                         </button>
-                        <button type="button" className="btn btn-secondary" onClick={this.props.onClick}>
+                        <button type="button" className="btn btn-secondary" onClick={this.props.closeSidePanel}>
                             <i className="fas fa-times"></i>
                             &nbsp;&nbsp;Hủy Bỏ
                         </button>
@@ -62,4 +91,4 @@ class Sidebar extends Component {
     }
 }
 
-export default Sidebar;
+export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);

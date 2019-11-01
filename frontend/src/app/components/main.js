@@ -1,5 +1,21 @@
 import React, {Component} from 'react';
 import classNames from 'classnames';
+import {connect} from 'react-redux';
+
+const mapStateToProps = (state) => {
+    return {
+        currentPage: state.listWorkReducer.currentPage,
+        totalPage: state.listWorkReducer.totalPage,
+        isMin: state.listWorkReducer.isMin,
+        isMax: state.listWorkReducer.isMax
+    } 
+  }
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    handleSidePanel: () => dispatch({ type: 'SWITCH_PANEL' }),
+  }
+}
 
 class Main extends Component{
     render(){
@@ -8,7 +24,7 @@ class Main extends Component{
                 <div className="row mb-3 pl-3">
                     <button type="button" 
                         className="btn btn-dark"
-                        onClick={this.props.addWork}>
+                        onClick={this.props.handleSidePanel}>
                         <i className="fas fa-plus"></i>
                         &nbsp;Thêm công việc
                     </button>
@@ -82,4 +98,4 @@ class Main extends Component{
     }
 }
 
-export default Main;
+export default connect(mapStateToProps,mapDispatchToProps)(Main);

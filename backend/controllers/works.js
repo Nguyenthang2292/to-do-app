@@ -28,15 +28,15 @@ module.exports = {
         }
     }),
     listAll: ((req,res,next) => {
-        let begin = (parseInt(req.query.page)-1)*10;
-        let end = (parseInt(req.query.page)-1)*10 + 10;
+        let begin = (parseInt(req.query.page)-1)*9;
+        let end = (parseInt(req.query.page)-1)*9 + 9;
         try{
             const listWork = db.get('works')
                             .value()
             const listWorkLength = db.get('works')
                                     .size()
                                     .value()
-            if(listWorkLength <= 10) {
+            if(listWorkLength <= 9) {
                 res.json({
                     status: "success",
                     message: "Work list found!!!",
@@ -51,7 +51,7 @@ module.exports = {
                     status: "success",
                     message: "Work list found!!!",
                     data: {
-                        totalPage: Math.ceil(listWorkLength/10),
+                        totalPage: Math.ceil(listWorkLength/9),
                         listWorkArr
                     }
                 })
