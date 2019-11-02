@@ -1,6 +1,5 @@
 const initialState = {
     listWork : [],
-    totalPageInit: 1,
     totalPage: 1,
     currentPage: 1,
     isMin: true,

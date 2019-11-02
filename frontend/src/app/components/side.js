@@ -41,13 +41,14 @@ class Sidebar extends Component {
         } else {
             const user = {
                 id: sessionStorage.getItem("id"),
-                name: name,
+                name: (name) ? name: sessionStorage.getItem("name"),
                 status: status,
             }
      
         this.props.updateWork(user);
         sessionStorage.clear();
         }
+        this.props.closeSidePanel({isSidePanelOpen: false});
     }
     componentDidUpdate(prevProps, prevState){
         if(prevProps.message !== this.props.message){

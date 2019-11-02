@@ -7,17 +7,17 @@
     },
     {
       "id": "24088df0-faf6-11e9-b3d2-e5a754a3a548",
-      "name": "gvghv",
-      "status": "show"
+      "name": "Đi chơi",
+      "status": "hide"
     },
     {
       "id": "2608cac0-faf6-11e9-b3d2-e5a754a3a548",
-      "name": "jbjoo",
+      "name": "Tắm",
       "status": "show"
     },
     {
       "id": "2af07010-faf6-11e9-b3d2-e5a754a3a548",
-      "name": "",
+      "name": "Đi nhảy",
       "status": "hide"
     },
     {
@@ -38,7 +38,7 @@
     {
       "id": "e9e82fb0-fb89-11e9-abcd-65a3988653b9",
       "name": "Đi chơi Halowen",
-      "status": "show"
+      "status": "hide"
     },
     {
       "id": "9b60dd60-fbc0-11e9-83ad-b7ea5624fab7",
@@ -47,48 +47,28 @@
     },
     {
       "id": "6198ccf0-fc83-11e9-9eab-dbacfe71e563",
-      "name": "adasdas",
-      "status": "show"
+      "name": "Đi lượn đường",
+      "status": "hide"
     },
     {
       "id": "89a46b00-fc83-11e9-9eab-dbacfe71e563",
-      "name": "adasd",
-      "status": "show"
+      "name": "đi ăn lẩu",
+      "status": "hide"
     },
     {
       "id": "910c0470-fc83-11e9-9eab-dbacfe71e563",
-      "name": "thang test",
+      "name": "đi supermarket",
       "status": "show"
     },
     {
       "id": "58964660-fcbe-11e9-93d8-5bfa21e820bb",
-      "name": "hjvjhvhjjgvgjv",
-      "status": "show"
+      "name": "tập thể dục",
+      "status": "hide"
     },
     {
       "id": "e41933f0-fcc3-11e9-93d8-5bfa21e820bb",
-      "name": "âcsascasc",
-      "status": "show"
-    },
-    {
-      "id": "a012d920-fd33-11e9-a545-3fe8bda13512",
-      "name": "cacdcsdc",
-      "status": "show"
-    },
-    {
-      "id": "db00cbe0-fd34-11e9-a545-3fe8bda13512",
-      "name": "gvuviv",
-      "status": "show"
-    },
-    {
-      "id": "b9a54f60-fd3a-11e9-8638-8b3b1c942a05",
-      "name": "sdfsdf",
-      "status": "show"
-    },
-    {
-      "id": "ba782fc0-fd3a-11e9-8638-8b3b1c942a05",
-      "name": "sdfsdf",
-      "status": "show"
+      "name": "nghe nhạc",
+      "status": "hide"
     }
   ]
 }

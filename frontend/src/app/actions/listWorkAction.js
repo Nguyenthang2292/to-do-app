@@ -14,18 +14,25 @@ const listWork = (data) => {
 }
 
 export const LIST_WORK_THUNK = (data) => {
+    let url, params;
+    if(!data.isSearchMode){
+        url = 'http://localhost:8000/work/';
+        params = {page: data.currentPage}
+    } else {
+        url = 'http://localhost:8000/work/search';
+        params = {page: data.currentPage, searchValue: data.searchInputValue};
+    }
     return ((dispatch) => {
         axios({
         method: 'get',
-        url: 'http://localhost:8000/work/',
-        params: {page: data.currentPage},
+        url: url,
+        params: params,
         headers: {'content-type': 'application/x-www-form-urlencoded;charset=utf-8'}
         }).then((res) => {
           console.log('Load data sucessfully... --> Status from Server: ', res.data.data);
           const dataRes = res.data.data;
           let state = {
             listWork : dataRes.listWorkArr,
-            totalPageInit: dataRes.totalPage,
             totalPage: dataRes.totalPage,
             currentPage: data.currentPage,
             isMin: data.isMin,
@@ -49,3 +56,4 @@ export const LIST_WORK_THUNK = (data) => {
         })
     }) 
 }
+

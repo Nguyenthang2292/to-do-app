@@ -9,7 +9,6 @@ const mapStateToProps = (state) => {
     return {
         isSidePanelOpen: state.handleSidePanelReducer.isSidePanelOpen,
         currentPage: state.listWorkReducer.currentPage,
-        totalPageInit: state.listWorkReducer.totalPageInit,
         totalPage: state.listWorkReducer.totalPage,
         isMin: state.listWorkReducer.isMin,
         isMax: state.listWorkReducer.isMax,
@@ -20,20 +19,23 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     handleSidePanel: (data) => dispatch(switchPanel(data)),
-    renderListWork: (data) => dispatch(LIST_WORK_THUNK(data))
+    renderListWork: (data) => dispatch(LIST_WORK_THUNK(data)),
   }
 }
 
 class Main extends Component{
+    state ={
+        searchInputValue: ''
+    }
     swtchPanel = () => {
         this.props.handleSidePanel({isSidePanelOpen: this.props.isSidePanelOpen})
     }
-    // ------------------------------------------------------------------
+// ------------------------------------------------------------------
 //                       HANDLE PAGINATION
 // ------------------------------------------------------------------
   handlePagination = (event) => {
-    let totalPage = this.props.totalPageInit;
-    // (!this.props.isSearchMode) ? (totalPage = this.props.totalPageInit) : (totalPage = this.props.totalPage);
+    let totalPage = this.props.totalPage;
+    // (!this.props.isSearchMode) ? (totalPage = this.props.) : (totalPage = this.props.totalPage);
     switch(event.target.id){
       case("pagination-next"):
         {
@@ -53,6 +55,29 @@ class Main extends Component{
         }
     }
   }
+// ------------------------------------------------------------------
+//                        SEARCH WORK 
+// ------------------------------------------------------------------
+  getPrimarySearchInformation = (event) => {
+    // this.props.renderListWork({isSearchMode: false});
+    this.setState({
+        searchInputValue: event.target.value
+    });
+    // this.props.renderListWork({isSearchMode: false, page: this.props.currentPage})
+  }
+  primarySearch = (event) => {
+    const {searchInputValue} = this.state;
+    event.preventDefault();
+    // this.setState({
+    //       isSearchMode: true,
+    //       listWorkSearch: listWork.filter((el) => el.name.includes(searchInputValue)),
+    //       totalPage: (Math.ceil(listWorkSearch.length/10) === 0) ? 1 : Math.ceil(listWorkSearch.length/10)
+    //   });
+    this.props.renderListWork({
+        searchInputValue: searchInputValue, 
+        isSearchMode: true, 
+        currentPage: this.props.currentPage})
+  }
     render(){
         return( 
             <div>
@@ -67,9 +92,9 @@ class Main extends Component{
                 <div className="row mb-3">
                     <div className="col">
                         <div className="input-group">
-                            <input type="text" className="form-control" placeholder="Nhập từ khóa..." onChange={this.props.getPrimarySearchInformation}/>
+                            <input type="text" className="form-control" placeholder="Nhập từ khóa..." onChange={this.getPrimarySearchInformation}/>
                             <div className="input-group-append">
-                                <button className="btn btn-secondary" type="submit" onClick={this.props.primarySearch}>
+                                <button className="btn btn-secondary" type="submit" onClick={this.primarySearch}>
                                 <i className="fas fa-search"></i>
                                 &nbsp;Tìm
                                 </button>
@@ -77,7 +102,7 @@ class Main extends Component{
                         </div>
                     </div>
                     <div className="col">
-                        <div className="form-inline">
+                        <div className="form-inline float-right">
                             <label className="mr-3">Sắp xếp</label>
                             <div className="form-group">
                                 <select 
@@ -92,6 +117,13 @@ class Main extends Component{
                             </div>
                         </div>
                     </div>
+                    <div className="col">
+                        <ul className="pagination float-right">
+                            <li className={classNames("page-item",{"disabled": this.props.isMin})} onClick={this.handlePagination}><span className="page-link" id="pagination-previous">Trang trước</span></li>
+                            <li className={"page-item"}><span className="page-link">{this.props.currentPage} / {this.props.totalPage}</span></li>
+                            <li className={classNames("page-item",{"disabled": this.props.isMax})} onClick={this.handlePagination}><span className="page-link" id="pagination-next">Trang kế</span></li>
+                        </ul>
+                    </div>
                 </div>
                 <table className="table table-striped">
                     <thead>
@@ -104,7 +136,9 @@ class Main extends Component{
                     </thead>
                     <tbody>
                         <tr>
-                            <th scope="row"></th>
+                            <th scope="row">
+                                {(this.props.isSearchMode) ? <i className="fas fa-arrow-alt-circle-left fa-2x" id="close-button"> </i> : null}
+                            </th>
                             <th>
                                 <div className="input-group input-group-sm mb-3">
                                     <input type="text" className="form-control" placeholder="Tìm kiếm nhanh.." onChange={this.props.getSecondarySearchInformation}/>
@@ -123,11 +157,6 @@ class Main extends Component{
                         <ListWork />
                     </tbody>
                 </table>
-                <ul className="pagination">
-                    <li className={classNames("page-item",{"disabled": this.props.isMin})} onClick={this.handlePagination}><span className="page-link" id="pagination-previous">Previous</span></li>
-                    <li className={"page-item"}><span className="page-link">{this.props.currentPage} / {this.props.totalPage}</span></li>
-                    <li className={classNames("page-item",{"disabled": this.props.isMax})} onClick={this.handlePagination}><span className="page-link" id="pagination-next">Next</span></li>
-                </ul>
             </div>
         );
     }

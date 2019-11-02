@@ -36,49 +36,39 @@ class App extends Component {
         isMax: true,
       });
   }
-// ------------------------------------------------------------------
-//                        CRUD WORK 
-// ------------------------------------------------------------------
-  // deleteWork = async (event) => {
-  //   const {currentPage} = this.state;
-  //   this.setState({
-  //       isSearchMode: false
-  //   })
-  //   const id = ;
-  // }
     // ------------------------------------------------------------------
     //                        SEARCH WORK 
     // ------------------------------------------------------------------
-    getPrimarySearchInformation = (event) => {
-      const {totalPageInit} = this.state;
-      this.setState({
-          searchInputValue: event.target.value,
-          isSearchMode: false,
-          totalPage: totalPageInit
-       });
-    }
-    primarySearch = (event) => {
-      const {listWork, searchInputValue, listWorkSearch} = this.state;
-      event.preventDefault();
-      this.setState({
-            isSearchMode: true,
-            listWorkSearch: listWork.filter((el) => el.name.includes(searchInputValue)),
-            totalPage: (Math.ceil(listWorkSearch.length/9) === 0) ? 1 : Math.ceil(listWorkSearch.length/9)
-        });
-    }
+    // getPrimarySearchInformation = (event) => {
+    //   const {} = this.state;
+    //   this.setState({
+    //       searchInputValue: event.target.value,
+    //       isSearchMode: false,
+    //       totalPage: 
+    //    });
+    // }
+    // primarySearch = (event) => {
+    //   const {listWork, searchInputValue, listWorkSearch} = this.state;
+    //   event.preventDefault();
+    //   this.setState({
+    //         isSearchMode: true,
+    //         listWorkSearch: listWork.filter((el) => el.name.includes(searchInputValue)),
+    //         totalPage: (Math.ceil(listWorkSearch.length/10) === 0) ? 1 : Math.ceil(listWorkSearch.length/10)
+    //     });
+    // }
     getSecondarySearchInformation = (event) => {
       const {
         listWork, 
         listWorkSearch, 
         searchInputValue, 
         totalPage, 
-        totalPageInit} = this.state;
+        } = this.state;
       if(event.target.value){
             this.setState({
               searchInputValue: event.target.value,
               isSearchMode: true,
               listWorkSearch: listWork.filter((el) => el.name.includes(searchInputValue)),
-              totalPage: (Math.ceil(listWorkSearch.length/9) === 0) ? 1 : Math.ceil(listWorkSearch.length/9)
+              totalPage: (Math.ceil(listWorkSearch.length/10) === 0) ? 1 : Math.ceil(listWorkSearch.length/10)
             })
             if(totalPage === 1) {
               this.setState({
@@ -89,14 +79,14 @@ class App extends Component {
             this.setState({
               searchInputValue: "",
               isSearchMode: false,
-              totalPage: totalPageInit ,
+              totalPage: '',
               isMax: false
             })
         }
     }
-    // ------------------------------------------------------------------
-    //                        SORT WORK 
-    // ------------------------------------------------------------------
+// ------------------------------------------------------------------
+//                        SORT WORK 
+// ------------------------------------------------------------------
 handleSorting = (event) => {
     this.setState({ 
         sortMode: event.target.value
@@ -140,7 +130,6 @@ componentDidUpdate(prevProps, prevState){
       listWorkSearch, 
       isCreateWork} = this.state;
     const MainPanel = <Main onChange={this.handleSorting}
-                            getPrimarySearchInformation={this.getPrimarySearchInformation}
                             getSecondarySearchInformation={this.getSecondarySearchInformation}
                             primarySearch={this.primarySearch}>
                       </Main>

@@ -27,17 +27,17 @@ module.exports = {
             next(err);
         }
     }),
-    listAll: ((req,res,next) => {
+    listQueryPage: ((req,res,next) => {
         console.log(req.query);
-        let begin = (parseInt(req.query.page)-1)*9;
-        let end = (parseInt(req.query.page)-1)*9 + 9;
+        let begin = (parseInt(req.query.page)-1)*10;
+        let end = (parseInt(req.query.page)-1)*10 + 10;
         try{
             const listWork = db.get('works')
                             .value()
             const listWorkLength = db.get('works')
                                     .size()
                                     .value()
-            if(listWorkLength <= 9) {
+            if(listWorkLength <= 10) {
                 res.json({
                     status: "success",
                     message: "Work list found!!!",
@@ -52,8 +52,41 @@ module.exports = {
                     status: "success",
                     message: "Work list found!!!",
                     data: {
-                        totalPage: Math.ceil(listWorkLength/9),
+                        totalPage: Math.ceil(listWorkLength/10),
                         listWorkArr
+                    }
+                })
+            }
+        } catch(err) {
+            next(err);
+        }
+    }),
+    listFilterSearch: ((req,res,next) => {
+        console.log(req.query);
+        let begin = (parseInt(req.query.page)-1)*10;
+        let end = (parseInt(req.query.page)-1)*10 + 10;
+        try{
+            const listWork = db.get('works')
+                            .value()
+            const listWorkFilterSearch = listWork.filter((el) => el.name.includes(req.query.searchValue));
+            const listWorkLength = listWorkFilterSearch.length;
+            if(listWorkLength <= 10) {
+                res.json({
+                    status: "success",
+                    message: "Work list found!!!",
+                    data: {
+                        totalPage: 1,
+                        listWorkArr: listWorkFilterSearch
+                    }
+                })
+            } else {
+                listWorkFilterSearch = Object.keys(listWorkFilterSearch).map(item => listWorkFilterSearch[item]).slice(begin, end);
+                res.json({
+                    status: "success",
+                    message: "Work list found!!!",
+                    data: {
+                        totalPage: Math.ceil(listWorkLength/10),
+                        listWorkArr: listWorkFilterSearch
                     }
                 })
             }
