@@ -4,8 +4,6 @@ import './App.css';
 import Main from './components/main';
 import Sidebar from './components/side';
 import Header from './components/header';
-import axios from 'axios';
-import qs from 'querystring';
 import { LIST_WORK_THUNK } from './actions/listWorkAction';
 
 const mapStateToProps = (state) => {
@@ -32,62 +30,22 @@ class App extends Component {
   //                        LOAD DATA
   // ------------------------------------------------------------------
   componentDidMount(){
-      this.props.renderListWork();
-  }
-// ------------------------------------------------------------------
-//                       HANDLE PAGINATION
-// ------------------------------------------------------------------
-  handlePagination = (event) => {
-    let totalPage;
-    (!this.state.isSearchMode) ? (totalPage = this.state.totalPageInit) : (totalPage = this.state.totalPage);
-    switch(event.target.id){
-      case("pagination-next"):
-        {
-          this.setState({
-            isMin: false,
-            currentPage: this.state.currentPage + 1
-          });
-          if(this.state.currentPage === totalPage - 1){
-            this.setState({isMax: true})
-          }
-          this.getListWorkFromApi(this.state.currentPage + 1);
-          break;
-        }
-        case("pagination-previous"):
-        {
-          this.setState({
-            isMax: false,
-            currentPage: this.state.currentPage - 1
-          });
-          if(this.state.currentPage === 2){
-            this.setState({
-                isMin: true
-            })
-          }
-          this.getListWorkFromApi(this.state.currentPage - 1);
-          break;
-        }
-    }
+      this.props.renderListWork({
+        currentPage: 1, 
+        isMin: true,
+        isMax: true,
+      });
   }
 // ------------------------------------------------------------------
 //                        CRUD WORK 
 // ------------------------------------------------------------------
-  deleteWork = async (event) => {
-    const {currentPage} = this.state;
-    this.setState({
-        isSearchMode: false
-    })
-    const id = event.target.parentNode.parentNode.id;
-    await axios({
-      method: 'delete',
-      url: 'http://localhost:8000/work/',
-      data: qs.stringify({id: id}),
-      headers: {
-        'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
-      }}).then((res) => console.log('Delete new work success !!! --> Message from Server: ', res.data.message))
-        .catch((err) => console.log(err))
-    // this.getListWorkFromApi(currentPage);
-  }
+  // deleteWork = async (event) => {
+  //   const {currentPage} = this.state;
+  //   this.setState({
+  //       isSearchMode: false
+  //   })
+  //   const id = ;
+  // }
     // ------------------------------------------------------------------
     //                        SEARCH WORK 
     // ------------------------------------------------------------------
@@ -181,14 +139,11 @@ componentDidUpdate(prevProps, prevState){
       isSearchMode, 
       listWorkSearch, 
       isCreateWork} = this.state;
-    const MainPanel = <Main 
-                            onClick={this.handlePagination}
-                            onChange={this.handleSorting}
+    const MainPanel = <Main onChange={this.handleSorting}
                             getPrimarySearchInformation={this.getPrimarySearchInformation}
                             getSecondarySearchInformation={this.getSecondarySearchInformation}
                             primarySearch={this.primarySearch}>
-                            {/* {(!isSearchMode) ? this.renderListWork() : this.renderListWork(listWorkSearch)}  */}
-                    </Main>
+                      </Main>
     return (
       <div className="container">
         <Header />

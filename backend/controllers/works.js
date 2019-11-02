@@ -28,6 +28,7 @@ module.exports = {
         }
     }),
     listAll: ((req,res,next) => {
+        console.log(req.query);
         let begin = (parseInt(req.query.page)-1)*9;
         let end = (parseInt(req.query.page)-1)*9 + 9;
         try{

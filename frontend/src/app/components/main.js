@@ -2,21 +2,25 @@ import React, {Component} from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 import ListWork from './listWork';
-import {switchPanel} from '../actions/handleSidePanelAction'
+import {switchPanel} from '../actions/handleSidePanelAction';
+import {LIST_WORK_THUNK} from '../actions/listWorkAction';
 
 const mapStateToProps = (state) => {
     return {
         isSidePanelOpen: state.handleSidePanelReducer.isSidePanelOpen,
         currentPage: state.listWorkReducer.currentPage,
+        totalPageInit: state.listWorkReducer.totalPageInit,
         totalPage: state.listWorkReducer.totalPage,
         isMin: state.listWorkReducer.isMin,
-        isMax: state.listWorkReducer.isMax
+        isMax: state.listWorkReducer.isMax,
+        isSearchMode: state.listWorkReducer.isSearchMode,
     } 
   }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     handleSidePanel: (data) => dispatch(switchPanel(data)),
+    renderListWork: (data) => dispatch(LIST_WORK_THUNK(data))
   }
 }
 
@@ -24,8 +28,32 @@ class Main extends Component{
     swtchPanel = () => {
         this.props.handleSidePanel({isSidePanelOpen: this.props.isSidePanelOpen})
     }
+    // ------------------------------------------------------------------
+//                       HANDLE PAGINATION
+// ------------------------------------------------------------------
+  handlePagination = (event) => {
+    let totalPage = this.props.totalPageInit;
+    // (!this.props.isSearchMode) ? (totalPage = this.props.totalPageInit) : (totalPage = this.props.totalPage);
+    switch(event.target.id){
+      case("pagination-next"):
+        {
+            this.props.renderListWork({
+                isMin: false,
+                currentPage: this.props.currentPage + 1
+            });
+          break;
+        }
+        case("pagination-previous"):
+        {
+            this.props.renderListWork({
+                isMax: false,
+                currentPage: this.props.currentPage - 1
+            });
+          break;
+        }
+    }
+  }
     render(){
-        console.log('main', this.props.isSidePanelOpen)
         return( 
             <div>
                 <div className="row mb-3 pl-3">
@@ -96,9 +124,9 @@ class Main extends Component{
                     </tbody>
                 </table>
                 <ul className="pagination">
-                    <li className={classNames("page-item",{"disabled": this.props.isMin})} onClick={this.props.onClick}><span className="page-link" id="pagination-previous">Previous</span></li>
+                    <li className={classNames("page-item",{"disabled": this.props.isMin})} onClick={this.handlePagination}><span className="page-link" id="pagination-previous">Previous</span></li>
                     <li className={"page-item"}><span className="page-link">{this.props.currentPage} / {this.props.totalPage}</span></li>
-                    <li className={classNames("page-item",{"disabled": this.props.isMax})} onClick={this.props.onClick}><span className="page-link" id="pagination-next">Next</span></li>
+                    <li className={classNames("page-item",{"disabled": this.props.isMax})} onClick={this.handlePagination}><span className="page-link" id="pagination-next">Next</span></li>
                 </ul>
             </div>
         );

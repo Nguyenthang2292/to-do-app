@@ -5,11 +5,13 @@ const initialState = {
     currentPage: 1,
     isMin: true,
     isMax: true,
+    iSearchMode: false,
 }
 
 const listWorkReducer = (state = initialState, action) => {
-    if(action.type === "LIST_WORK") {
-        return {...state, ...action.payload}
+    switch(action.type){
+        case "LIST_WORK":
+            return {...state, ...action.payload}
     }
     return state;
 }

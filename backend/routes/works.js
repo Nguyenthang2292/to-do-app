@@ -5,7 +5,7 @@ const middleware = require('../middleware/middleware');
 
 routes.get('/', workListController.listAll);
 routes.post('/', middleware.validate, workListController.create);
-routes.put('/', workListController.update);
+routes.put('/',middleware.validate, workListController.update);
 routes.delete('/', workListController.delete);
 
 module.exports = routes;

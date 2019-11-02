@@ -2,16 +2,12 @@ const initialState = {}
 const crudWorkReducer = (state = initialState, action) => {
     switch (action.type) {
         case "CREATE_WORK":
-            console.log(action.payload);
-            return {state,...action.payload}
+            return {...state,...action.payload}
         case "UPDATE_WORK":
-            console.log(action.payload);
-            return {state,...action.payload}
+            return {...state,...action.payload}
         case "DELETE_WORK":
-            console.log(action.payload);
-            return {state,...action.payload}
+            return {...state,...action.payload}
         case "ERROR":
-            console.log(action.payload);
             return state;
         default:
             return state;

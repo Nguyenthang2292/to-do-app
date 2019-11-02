@@ -2,22 +2,22 @@
   "works": [
     {
       "id": "202ade90-faf6-11e9-b3d2-e5a754a3a548",
-      "name": "asdasd",
+      "name": "Đi ngủ",
       "status": "show"
     },
     {
       "id": "24088df0-faf6-11e9-b3d2-e5a754a3a548",
-      "name": "uống trà đá",
-      "status": "hide"
+      "name": "gvghv",
+      "status": "show"
     },
     {
       "id": "2608cac0-faf6-11e9-b3d2-e5a754a3a548",
-      "name": "Ngủ",
-      "status": "hide"
+      "name": "jbjoo",
+      "status": "show"
     },
     {
       "id": "2af07010-faf6-11e9-b3d2-e5a754a3a548",
-      "name": "La la la",
+      "name": "",
       "status": "hide"
     },
     {
@@ -28,21 +28,6 @@
     {
       "id": "30f76810-faf6-11e9-b3d2-e5a754a3a548",
       "name": "Làm việc",
-      "status": "show"
-    },
-    {
-      "id": "33bdb400-faf6-11e9-b3d2-e5a754a3a548",
-      "name": "Học bài",
-      "status": "show"
-    },
-    {
-      "id": "3a8c68d0-faf6-11e9-b3d2-e5a754a3a548",
-      "name": "Đi chơi",
-      "status": "show"
-    },
-    {
-      "id": "3d20f660-faf6-11e9-b3d2-e5a754a3a548",
-      "name": "Lái Xe",
       "status": "show"
     },
     {
@@ -73,6 +58,36 @@
     {
       "id": "910c0470-fc83-11e9-9eab-dbacfe71e563",
       "name": "thang test",
+      "status": "show"
+    },
+    {
+      "id": "58964660-fcbe-11e9-93d8-5bfa21e820bb",
+      "name": "hjvjhvhjjgvgjv",
+      "status": "show"
+    },
+    {
+      "id": "e41933f0-fcc3-11e9-93d8-5bfa21e820bb",
+      "name": "âcsascasc",
+      "status": "show"
+    },
+    {
+      "id": "a012d920-fd33-11e9-a545-3fe8bda13512",
+      "name": "cacdcsdc",
+      "status": "show"
+    },
+    {
+      "id": "db00cbe0-fd34-11e9-a545-3fe8bda13512",
+      "name": "gvuviv",
+      "status": "show"
+    },
+    {
+      "id": "b9a54f60-fd3a-11e9-8638-8b3b1c942a05",
+      "name": "sdfsdf",
+      "status": "show"
+    },
+    {
+      "id": "ba782fc0-fd3a-11e9-8638-8b3b1c942a05",
+      "name": "sdfsdf",
       "status": "show"
     }
   ]

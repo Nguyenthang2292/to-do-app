@@ -7,16 +7,17 @@ import {closePanel} from '../actions/handleSidePanelAction';
 const mapStateToProps = (state) => {
     return {
         isCreateWork: state.handleSidePanelReducer.isCreateWork,
-        currentPage: state.listWorkReducer.currentPage
+        currentPage: state.listWorkReducer.currentPage,
+        message: state.crudWorkReducer.message
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-      closeSidePanel: (data) => dispatch(closePanel(data)),
-      createWork: (data) => dispatch(CREATE_WORK_THUNK(data)),
-      updateWork: (data) => dispatch(UPDATE_WORK_THUNK(data)),
-      renderListWork: (data) => dispatch(LIST_WORK_THUNK(data))
+        createWork: (data) => dispatch(CREATE_WORK_THUNK(data)),
+        updateWork: (data) => dispatch(UPDATE_WORK_THUNK(data)),
+        closeSidePanel: (data) => dispatch(closePanel(data)),
+        renderListWork: (data) => dispatch(LIST_WORK_THUNK(data))
     }
   }
 
@@ -37,16 +38,20 @@ class Sidebar extends Component {
             this.props.createWork({
                 name: name, 
                 status: status});
-            this.props.renderListWork({currentPage: this.props.currentPage});
         } else {
             const user = {
                 id: sessionStorage.getItem("id"),
-                name: sessionStorage.getItem("name"),
-                status: this.state.status,
+                name: name,
+                status: status,
             }
-            this.props.updateWork(user);
-            sessionStorage.clear();
-            this.props.renderListWork({currentPage: this.props.currentPage});
+     
+        this.props.updateWork(user);
+        sessionStorage.clear();
+        }
+    }
+    componentDidUpdate(prevProps, prevState){
+        if(prevProps.message !== this.props.message){
+            this.props.renderListWork({ currentPage: this.props.currentPage})
         }
     }
     clsPanel = () => {
