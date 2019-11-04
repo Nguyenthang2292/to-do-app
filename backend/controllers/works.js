@@ -1,6 +1,8 @@
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 const uuid = require('uuid/v1');
+const redis = require('redis');
+const client = redis.createClient(6379);
 
 const adapter = new FileSync('db.json');
 const db = low(adapter);
@@ -37,11 +39,14 @@ module.exports = {
             const listWorkLength = db.get('works')
                                     .size()
                                     .value()
+            let redisArr = []
+            listWork.map((el) => {
+                console.log(el)
+            })
             if(listWorkLength <= 10) {
-                // client.set("data", {
-                //     totalPage: 1,
-                //     listWorkArr: listWork
-                // });
+                client.set("type", "list");
+                client.set("totalPage", "1");
+                client.hmset("data", )
                 res.json({
                     status: "success",
                     message: "Work list found!!!",
