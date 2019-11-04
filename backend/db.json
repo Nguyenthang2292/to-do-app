@@ -1,14 +1,9 @@
 {
   "works": [
     {
-      "id": "202ade90-faf6-11e9-b3d2-e5a754a3a548",
-      "name": "Đi ngủ",
-      "status": "show"
-    },
-    {
       "id": "24088df0-faf6-11e9-b3d2-e5a754a3a548",
       "name": "Đi chơi",
-      "status": "hide"
+      "status": "show"
     },
     {
       "id": "2608cac0-faf6-11e9-b3d2-e5a754a3a548",
@@ -18,7 +13,7 @@
     {
       "id": "2af07010-faf6-11e9-b3d2-e5a754a3a548",
       "name": "Đi nhảy",
-      "status": "hide"
+      "status": "show"
     },
     {
       "id": "2d64a460-faf6-11e9-b3d2-e5a754a3a548",
@@ -28,7 +23,7 @@
     {
       "id": "30f76810-faf6-11e9-b3d2-e5a754a3a548",
       "name": "Làm việc",
-      "status": "show"
+      "status": "hide"
     },
     {
       "id": "4a625d50-faf6-11e9-b3d2-e5a754a3a548",
@@ -53,7 +48,7 @@
     {
       "id": "89a46b00-fc83-11e9-9eab-dbacfe71e563",
       "name": "đi ăn lẩu",
-      "status": "hide"
+      "status": "show"
     },
     {
       "id": "910c0470-fc83-11e9-9eab-dbacfe71e563",
