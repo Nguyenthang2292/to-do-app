@@ -25,7 +25,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-class Main extends Component{
+class MainPanel extends Component{
     state ={
         searchInputValue: '',
         sortValue: "none",
@@ -194,4 +194,4 @@ componentDidUpdate(prevProps, prevState){
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(Main);
+export default connect(mapStateToProps,mapDispatchToProps)(MainPanel);

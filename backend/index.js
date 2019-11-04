@@ -12,7 +12,6 @@ const client = redis.createClient(6379);
 client.on('connect', (req,res)=> {
   console.log('Connect to redis...');
 });
-client.set("type", "list");
 
 client.on('error', (err) => {
   console.log("Error" + err);
@@ -20,7 +19,6 @@ client.on('error', (err) => {
 
 
 //-------------------------Body Parser-------------------------
-
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cors());
 

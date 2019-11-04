@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import './App.css';
-import Main from './components/main';
-import Sidebar from './components/side';
+import MainPanel from './components/mainPanel';
+import SidePanel from './components/sidePanel';
 import Header from './components/header';
 import { LIST_WORK_THUNK } from './actions/listWorkAction';
 
@@ -45,20 +45,20 @@ class App extends Component {
             ? (
               <div className="row">
                 <div className="col">
-                    <Main onChange={this.handleSorting} />
+                    <MainPanel onChange={this.handleSorting} />
                 </div>
               </div>
             ) 
             : (
               <div className="row">
                 <div className="col-4">
-                  <Sidebar 
+                  <SidePanel 
                     onSubmit={(isCreateWork) ? this.createWork : this.updateWorkSubmit}
                     onChange={this.getWorkInformation}
                   />
                 </div>
                 <div className="col-8">
-                    <Main onChange={this.handleSorting} />
+                    <MainPanel onChange={this.handleSorting} />
                 </div>
               </div>
             )} 

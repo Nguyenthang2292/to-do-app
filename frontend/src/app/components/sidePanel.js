@@ -21,7 +21,7 @@ const mapDispatchToProps = (dispatch) => {
     }
   }
 
-class Sidebar extends Component {
+class SidePanel extends Component {
     state = {
         name: '',
         status: "show",
@@ -106,4 +106,4 @@ class Sidebar extends Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);
+export default connect(mapStateToProps, mapDispatchToProps)(SidePanel);

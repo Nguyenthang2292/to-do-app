@@ -10,6 +10,17 @@ const db = low(adapter);
 db.defaults({works: []})
   .write()
 
+function setRedis(initialArr, type, totalPage){
+    try {
+        client.set("type", type);
+        client.set("totalPage", totalPage);
+        client.set("data:work", JSON.stringify(initialArr));
+        console.log('Set Redis cache Successfully...');
+    } catch (err){
+        console.log("Oop have an Error Occur.... " + err);
+    }
+}
+
 module.exports = {
     create: ((req,res,next) => {
         try{
@@ -30,7 +41,6 @@ module.exports = {
         }
     }),
     listQueryPage: ((req,res,next) => {
-        console.log(req.query);
         let begin = (parseInt(req.query.page)-1)*10;
         let end = (parseInt(req.query.page)-1)*10 + 10;
         try{
@@ -39,33 +49,31 @@ module.exports = {
             const listWorkLength = db.get('works')
                                     .size()
                                     .value()
-            let redisArr = []
-            listWork.map((el) => {
-                console.log(el)
-            })
+            let totalPage;
+            if(listWorkLength <= 10){
+                totalPage = 1;
+            } else {
+                totalPage = Math.ceil(listWorkLength/10);
+            }
+            setRedis(listWork, req.query.type, totalPage.toString());
             if(listWorkLength <= 10) {
-                client.set("type", "list");
-                client.set("totalPage", "1");
-                client.hmset("data", )
                 res.json({
                     status: "success",
                     message: "Work list found!!!",
                     data: {
-                        totalPage: 1,
+                        dataSource: "server",
+                        totalPage: totalPage,
                         listWorkArr: listWork
                     }
                 })
             } else {
                 listWorkArr = Object.keys(listWork).map(item => listWork[item]).slice(begin, end);
-                // client.set("data", {
-                //     totalPage: Math.ceil(listWorkLength/10),
-                //     listWorkArr: listWork
-                // });
                 res.json({
                     status: "success",
                     message: "Work list found!!!",
                     data: {
-                        totalPage: Math.ceil(listWorkLength/10),
+                        dataSource: "server",
+                        totalPage: totalPage,
                         listWorkArr
                     }
                 })
@@ -75,7 +83,6 @@ module.exports = {
         }
     }),
     listFilterSearch: ((req,res,next) => {
-        console.log(req.query);
         let begin = (parseInt(req.query.page)-1)*10;
         let end = (parseInt(req.query.page)-1)*10 + 10;
         try{
@@ -83,11 +90,19 @@ module.exports = {
                             .value()
             const listWorkFilterSearch = listWork.filter((el) => el.name.includes(req.query.searchValue));
             const listWorkLength = listWorkFilterSearch.length;
+            let totalPage;
+            if(listWorkLength <= 10){
+                totalPage = 1;
+            } else {
+                totalPage = Math.ceil(listWorkLength/10);
+            }
+            setRedis(listWorkFilterSearch, req.query.type, totalPage.toString());
             if(listWorkLength <= 10) {
                 res.json({
                     status: "success",
                     message: "Work list found!!!",
                     data: {
+                        dataSource: "server",
                         totalPage: 1,
                         listWorkArr: listWorkFilterSearch
                     }
@@ -98,6 +113,7 @@ module.exports = {
                     status: "success",
                     message: "Work list found!!!",
                     data: {
+                        dataSource: "server",
                         totalPage: Math.ceil(listWorkLength/10),
                         listWorkArr: listWorkFilterSearch
                     }
@@ -108,7 +124,6 @@ module.exports = {
         }
     }),
     listFilterSort: ((req,res,next) => {
-        console.log(req.query);
         let begin = (parseInt(req.query.page)-1)*10;
         let end = (parseInt(req.query.page)-1)*10 + 10;
         try{
@@ -133,21 +148,32 @@ module.exports = {
                 listWork = listWork;
             }
             const listWorkLength = listWork.length;
+            let totalPage;
+            if(listWorkLength <= 10){
+                totalPage = 1;
+            } else {
+                totalPage = Math.ceil(listWorkLength/10);
+            }
+            setRedis(listWork, req.query.type, totalPage.toString());
             if(listWorkLength <= 10) {
+                setRedis(listWork, req.query.type, req.query.page, "1");
                 res.json({
                     status: "success",
                     message: "Work list found!!!",
                     data: {
+                        dataSource: "server",
                         totalPage: 1,
                         listWorkArr: listWork
                     }
                 })
             } else {
                 listWork = Object.keys(listWork).map(item => listWork[item]).slice(begin, end);
+                setRedis(listWork, req.query.type, req.query.page, Math.ceil(listWorkLength/10).toString());
                 res.json({
                     status: "success",
                     message: "Work list found!!!",
                     data: {
+                        dataSource: "server",
                         totalPage: Math.ceil(listWorkLength/10),
                         listWorkArr: listWork
                     }
