@@ -8,11 +8,13 @@ import {LIST_WORK_THUNK} from '../actions/listWorkAction';
 const mapStateToProps = (state) => {
     return {
         isSidePanelOpen: state.handleSidePanelReducer.isSidePanelOpen,
+        //------------------------------------------------------------
+        listWork: state.listWorkReducer.listWork,
         currentPage: state.listWorkReducer.currentPage,
         totalPage: state.listWorkReducer.totalPage,
         isMin: state.listWorkReducer.isMin,
         isMax: state.listWorkReducer.isMax,
-        isSearchMode: state.listWorkReducer.isSearchMode,
+        isMode: state.listWorkReducer.isMode,
     } 
   }
 
@@ -25,7 +27,8 @@ const mapDispatchToProps = (dispatch) => {
 
 class Main extends Component{
     state ={
-        searchInputValue: ''
+        searchInputValue: '',
+        sortValue: "none",
     }
     swtchPanel = () => {
         this.props.handleSidePanel({isSidePanelOpen: this.props.isSidePanelOpen})
@@ -34,14 +37,13 @@ class Main extends Component{
 //                       HANDLE PAGINATION
 // ------------------------------------------------------------------
   handlePagination = (event) => {
-    let totalPage = this.props.totalPage;
-    // (!this.props.isSearchMode) ? (totalPage = this.props.) : (totalPage = this.props.totalPage);
     switch(event.target.id){
       case("pagination-next"):
         {
             this.props.renderListWork({
                 isMin: false,
-                currentPage: this.props.currentPage + 1
+                currentPage: this.props.currentPage + 1,
+                isMode: this.props.isMode
             });
           break;
         }
@@ -49,7 +51,8 @@ class Main extends Component{
         {
             this.props.renderListWork({
                 isMax: false,
-                currentPage: this.props.currentPage - 1
+                currentPage: this.props.currentPage - 1,
+                isMode: this.props.isMode
             });
           break;
         }
@@ -59,25 +62,54 @@ class Main extends Component{
 //                        SEARCH WORK 
 // ------------------------------------------------------------------
   getPrimarySearchInformation = (event) => {
-    // this.props.renderListWork({isSearchMode: false});
     this.setState({
         searchInputValue: event.target.value
     });
-    // this.props.renderListWork({isSearchMode: false, page: this.props.currentPage})
   }
   primarySearch = (event) => {
     const {searchInputValue} = this.state;
     event.preventDefault();
-    // this.setState({
-    //       isSearchMode: true,
-    //       listWorkSearch: listWork.filter((el) => el.name.includes(searchInputValue)),
-    //       totalPage: (Math.ceil(listWorkSearch.length/10) === 0) ? 1 : Math.ceil(listWorkSearch.length/10)
-    //   });
     this.props.renderListWork({
         searchInputValue: searchInputValue, 
-        isSearchMode: true, 
+        isMode: "search", 
         currentPage: this.props.currentPage})
   }
+  getSecondarySearchInformation = (event) => {
+    const {searchInputValue} = this.state;
+    this.setState({
+        searchInputValue: event.target.value
+    });
+    event.preventDefault();
+    this.props.renderListWork({
+        searchInputValue: searchInputValue,
+        isMode: "search",
+        currentPage: this.props.currentPage
+    });
+  }
+  backToPrev = (event) => {
+    this.props.renderListWork({
+        isMode: "none",
+        currentPage: this.props.currentPage
+    });
+  }
+  // ------------------------------------------------------------------
+//                        SORT WORK 
+// ------------------------------------------------------------------
+handleSorting = (event) => {
+    event.preventDefault();
+    this.setState({ 
+        sortValue: event.target.value
+     });
+}
+componentDidUpdate(prevProps, prevState){
+  if(this.state.sortValue !== prevState.sortValue){
+        this.props.renderListWork({
+            isMode: "sort", 
+            sortValue: this.state.sortValue, 
+            currentPage: this.props.currentPage
+        })
+    }
+}
     render(){
         return( 
             <div>
@@ -107,7 +139,7 @@ class Main extends Component{
                             <div className="form-group">
                                 <select 
                                     className="form-control"
-                                    onChange={this.props.onChange}>
+                                    onChange={this.handleSorting}>
                                     <option value="none"></option>
                                     <option value="increase">Thứ tự A-Z</option>
                                     <option value="decrease">Thứ tự Z-A</option>
@@ -137,16 +169,16 @@ class Main extends Component{
                     <tbody>
                         <tr>
                             <th scope="row">
-                                {(this.props.isSearchMode) ? <i className="fas fa-arrow-alt-circle-left fa-2x" id="close-button"> </i> : null}
+                                {(this.props.isMode === "search") ? <i className="fas fa-arrow-alt-circle-left fa-2x" id="close-button" onClick={this.backToPrev}> </i>  : null}
                             </th>
                             <th>
                                 <div className="input-group input-group-sm mb-3">
-                                    <input type="text" className="form-control" placeholder="Tìm kiếm nhanh.." onChange={this.props.getSecondarySearchInformation}/>
+                                    <input type="text" className="form-control" placeholder="Tìm kiếm nhanh.." onChange={this.getSecondarySearchInformation}/>
                                 </div>
                             </th>
                             <th>
                                 <div className="form-group">
-                                    <select className="form-control-sm w-100" onChange={this.props.onChange}>
+                                    <select className="form-control-sm w-100" onChange={this.handleSorting}>
                                         <option value="isActive">Đang hoạt động</option>
                                         <option value="isDisable">Chưa hoạt động</option>
                                     </select>

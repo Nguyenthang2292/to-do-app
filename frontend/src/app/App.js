@@ -36,103 +36,8 @@ class App extends Component {
         isMax: true,
       });
   }
-    // ------------------------------------------------------------------
-    //                        SEARCH WORK 
-    // ------------------------------------------------------------------
-    // getPrimarySearchInformation = (event) => {
-    //   const {} = this.state;
-    //   this.setState({
-    //       searchInputValue: event.target.value,
-    //       isSearchMode: false,
-    //       totalPage: 
-    //    });
-    // }
-    // primarySearch = (event) => {
-    //   const {listWork, searchInputValue, listWorkSearch} = this.state;
-    //   event.preventDefault();
-    //   this.setState({
-    //         isSearchMode: true,
-    //         listWorkSearch: listWork.filter((el) => el.name.includes(searchInputValue)),
-    //         totalPage: (Math.ceil(listWorkSearch.length/10) === 0) ? 1 : Math.ceil(listWorkSearch.length/10)
-    //     });
-    // }
-    getSecondarySearchInformation = (event) => {
-      const {
-        listWork, 
-        listWorkSearch, 
-        searchInputValue, 
-        totalPage, 
-        } = this.state;
-      if(event.target.value){
-            this.setState({
-              searchInputValue: event.target.value,
-              isSearchMode: true,
-              listWorkSearch: listWork.filter((el) => el.name.includes(searchInputValue)),
-              totalPage: (Math.ceil(listWorkSearch.length/10) === 0) ? 1 : Math.ceil(listWorkSearch.length/10)
-            })
-            if(totalPage === 1) {
-              this.setState({
-                isMax: true
-              })
-            }
-        } else {
-            this.setState({
-              searchInputValue: "",
-              isSearchMode: false,
-              totalPage: '',
-              isMax: false
-            })
-        }
-    }
-// ------------------------------------------------------------------
-//                        SORT WORK 
-// ------------------------------------------------------------------
-handleSorting = (event) => {
-    this.setState({ 
-        sortMode: event.target.value
-     });
-}
-componentDidUpdate(prevProps, prevState){
-  const {listWork, sortMode} = this.state;
-  if(sortMode !== prevState.sortMode){
-      switch(sortMode){
-            case("increase"):
-               this.setState({
-                   listWork: listWork.sort((a,b) => a.name.localeCompare(b.name))
-               });
-                break;
-            case("decrease"):
-               this.setState({
-                    listWork: listWork.sort((a,b) => b.name.localeCompare(a.name))
-               });
-               break;
-            case("isActive"):
-               this.setState({
-                   listWork: [...listWork.filter((el) => el.status === "show").sort((a,b) =>  a.name.localeCompare(b.name)),...listWork.filter((el) => el.status === "hide").sort((a,b) =>  a.name.localeCompare(b.name))]
-               });
-               break;
-            case("isDisable"):
-                this.setState({
-                    listWork: [...listWork.filter((el) => el.status === "hide").sort((a,b) =>  a.name.localeCompare(b.name)),...listWork.filter((el) => el.status === "show").sort((a,b) =>  a.name.localeCompare(b.name))]
-                });
-                break;
-            default: 
-                this.setState({
-                    listWork: listWork
-                })
-        }
-    this.renderListWork(listWork);
-    }
-}
   render(){
-    const {
-      isSearchMode, 
-      listWorkSearch, 
-      isCreateWork} = this.state;
-    const MainPanel = <Main onChange={this.handleSorting}
-                            getSecondarySearchInformation={this.getSecondarySearchInformation}
-                            primarySearch={this.primarySearch}>
-                      </Main>
+    const { isCreateWork} = this.state;
     return (
       <div className="container">
         <Header />
@@ -140,7 +45,7 @@ componentDidUpdate(prevProps, prevState){
             ? (
               <div className="row">
                 <div className="col">
-                    {MainPanel}
+                    <Main onChange={this.handleSorting} />
                 </div>
               </div>
             ) 
@@ -153,7 +58,7 @@ componentDidUpdate(prevProps, prevState){
                   />
                 </div>
                 <div className="col-8">
-                    {MainPanel}
+                    <Main onChange={this.handleSorting} />
                 </div>
               </div>
             )} 

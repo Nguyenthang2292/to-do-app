@@ -21,7 +21,13 @@
   color: #09d3ac;
 }
 
-#close-button:hover {
+
+#close-button {
   color: grey;
+  cursor: pointer;
+}
+
+#close-button:hover {
+  color: #007BFF;
   cursor: pointer;
 }

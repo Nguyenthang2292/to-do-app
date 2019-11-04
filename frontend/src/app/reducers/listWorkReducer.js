@@ -4,7 +4,7 @@ const initialState = {
     currentPage: 1,
     isMin: true,
     isMax: true,
-    iSearchMode: false,
+    isMode: "none",
 }
 
 const listWorkReducer = (state = initialState, action) => {

@@ -14,6 +14,9 @@ Version 1.0
 Version 1.1 (1/11/2019)
 - Front-end: Quản lý State bằng Redux / Redux-thunk
 
+Version 1.2 (4/11/2019)
+- Back-end: Tăng tốc độ truy xuất bằng Redis
+
 Version 2.0 (... tương lai)
 - Bổ sung chức năng Authentication / Authorization
 

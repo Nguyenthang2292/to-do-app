@@ -15,12 +15,27 @@ const listWork = (data) => {
 
 export const LIST_WORK_THUNK = (data) => {
     let url, params;
-    if(!data.isSearchMode){
-        url = 'http://localhost:8000/work/';
-        params = {page: data.currentPage}
-    } else {
-        url = 'http://localhost:8000/work/search';
-        params = {page: data.currentPage, searchValue: data.searchInputValue};
+    switch (data.isMode) {
+        case "search":
+            url = 'http://localhost:8000/work/search';
+            params = {
+                type: "search",
+                page: data.currentPage, 
+                searchValue: data.searchInputValue};
+            break;
+        case "sort":
+            url = 'http://localhost:8000/work/sort';
+            params = {
+                type: "sort",
+                page: data.currentPage, 
+                sortValue: data.sortValue};
+            break;
+        default:
+            url = 'http://localhost:8000/work/';
+            params = {
+                type: "list",
+                page: data.currentPage};
+            break;
     }
     return ((dispatch) => {
         axios({
@@ -35,8 +50,10 @@ export const LIST_WORK_THUNK = (data) => {
             listWork : dataRes.listWorkArr,
             totalPage: dataRes.totalPage,
             currentPage: data.currentPage,
+            isSearchMode: data.isSearchMode,
             isMin: data.isMin,
             isMax: data.isMax,
+            isMode: data.isMode
           }
         if(state.currentPage === state.totalPage){
             state = { ...state, isMax: true}
@@ -56,4 +73,3 @@ export const LIST_WORK_THUNK = (data) => {
         })
     }) 
 }
-

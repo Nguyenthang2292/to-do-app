@@ -38,6 +38,10 @@ module.exports = {
                                     .size()
                                     .value()
             if(listWorkLength <= 10) {
+                // client.set("data", {
+                //     totalPage: 1,
+                //     listWorkArr: listWork
+                // });
                 res.json({
                     status: "success",
                     message: "Work list found!!!",
@@ -48,6 +52,10 @@ module.exports = {
                 })
             } else {
                 listWorkArr = Object.keys(listWork).map(item => listWork[item]).slice(begin, end);
+                // client.set("data", {
+                //     totalPage: Math.ceil(listWorkLength/10),
+                //     listWorkArr: listWork
+                // });
                 res.json({
                     status: "success",
                     message: "Work list found!!!",
@@ -87,6 +95,56 @@ module.exports = {
                     data: {
                         totalPage: Math.ceil(listWorkLength/10),
                         listWorkArr: listWorkFilterSearch
+                    }
+                })
+            }
+        } catch(err) {
+            next(err);
+        }
+    }),
+    listFilterSort: ((req,res,next) => {
+        console.log(req.query);
+        let begin = (parseInt(req.query.page)-1)*10;
+        let end = (parseInt(req.query.page)-1)*10 + 10;
+        try{
+            let listWork = db.get('works')
+                            .value()
+            switch (req.query.sortValue) {
+            case("increase"):
+                listWork = listWork.sort((a,b) => a.name.localeCompare(b.name));
+                break;
+            case("decrease"):
+                listWork = listWork.sort((a,b) => b.name.localeCompare(a.name));
+               break;
+            case("isActive"):
+                listWork = [...listWork.filter((el) => el.status === "show").sort((a,b) =>  a.name.localeCompare(b.name)),
+                ...listWork.filter((el) => el.status === "hide").sort((a,b) =>  a.name.localeCompare(b.name))];
+               break;
+            case("isDisable"):
+                listWork = [...listWork.filter((el) => el.status === "hide").sort((a,b) =>  a.name.localeCompare(b.name)),
+                ...listWork.filter((el) => el.status === "show").sort((a,b) =>  a.name.localeCompare(b.name))];
+                break;
+            default: 
+                listWork = listWork;
+            }
+            const listWorkLength = listWork.length;
+            if(listWorkLength <= 10) {
+                res.json({
+                    status: "success",
+                    message: "Work list found!!!",
+                    data: {
+                        totalPage: 1,
+                        listWorkArr: listWork
+                    }
+                })
+            } else {
+                listWork = Object.keys(listWork).map(item => listWork[item]).slice(begin, end);
+                res.json({
+                    status: "success",
+                    message: "Work list found!!!",
+                    data: {
+                        totalPage: Math.ceil(listWorkLength/10),
+                        listWorkArr: listWork
                     }
                 })
             }

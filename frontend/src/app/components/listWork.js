@@ -8,14 +8,16 @@ const mapStateToProps = (state) => {
     return {
         isSidePanelOpen: state.handleSidePanelReducer.isSidePanelOpen,
         isCreateWork: state.handleSidePanelReducer.isCreateWork,
+        //-------------------------------------------------------------
         listWork: state.listWorkReducer.listWork,
         currentPage: state.listWorkReducer.currentPage,
         totalPage: state.listWorkReducer.totalPage,
+        //-------------------------------------------------------------
         message: state.crudWorkReducer.message
     } 
   }
   
-  const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
     return{
         handleSidePanel: (data) => dispatch(switchPanel(data)),
         renderListWork: (data) => dispatch(LIST_WORK_THUNK(data)),

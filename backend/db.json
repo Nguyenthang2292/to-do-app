@@ -1,9 +1,9 @@
 {
   "works": [
     {
-      "id": "24088df0-faf6-11e9-b3d2-e5a754a3a548",
-      "name": "Đi chơi",
-      "status": "show"
+      "id": "58964660-fcbe-11e9-93d8-5bfa21e820bb",
+      "name": "tập thể dục",
+      "status": "hide"
     },
     {
       "id": "2608cac0-faf6-11e9-b3d2-e5a754a3a548",
@@ -11,14 +11,9 @@
       "status": "show"
     },
     {
-      "id": "2af07010-faf6-11e9-b3d2-e5a754a3a548",
-      "name": "Đi nhảy",
-      "status": "show"
-    },
-    {
-      "id": "2d64a460-faf6-11e9-b3d2-e5a754a3a548",
-      "name": "Ăn đấm",
-      "status": "show"
+      "id": "e41933f0-fcc3-11e9-93d8-5bfa21e820bb",
+      "name": "nghe nhạc",
+      "status": "hide"
     },
     {
       "id": "30f76810-faf6-11e9-b3d2-e5a754a3a548",
@@ -31,13 +26,13 @@
       "status": "show"
     },
     {
-      "id": "e9e82fb0-fb89-11e9-abcd-65a3988653b9",
-      "name": "Đi chơi Halowen",
+      "id": "910c0470-fc83-11e9-9eab-dbacfe71e563",
+      "name": "đi supermarket",
       "status": "hide"
     },
     {
-      "id": "9b60dd60-fbc0-11e9-83ad-b7ea5624fab7",
-      "name": "Ăn uống uống ăn",
+      "id": "2af07010-faf6-11e9-b3d2-e5a754a3a548",
+      "name": "Đi nhảy",
       "status": "show"
     },
     {
@@ -46,23 +41,28 @@
       "status": "hide"
     },
     {
+      "id": "e9e82fb0-fb89-11e9-abcd-65a3988653b9",
+      "name": "Đi chơi Halowen",
+      "status": "hide"
+    },
+    {
+      "id": "24088df0-faf6-11e9-b3d2-e5a754a3a548",
+      "name": "Đi chơi",
+      "status": "hide"
+    },
+    {
       "id": "89a46b00-fc83-11e9-9eab-dbacfe71e563",
       "name": "đi ăn lẩu",
       "status": "show"
     },
     {
-      "id": "910c0470-fc83-11e9-9eab-dbacfe71e563",
-      "name": "đi supermarket",
+      "id": "9b60dd60-fbc0-11e9-83ad-b7ea5624fab7",
+      "name": "Ăn uống uống ăn",
       "status": "show"
     },
     {
-      "id": "58964660-fcbe-11e9-93d8-5bfa21e820bb",
-      "name": "tập thể dục",
-      "status": "hide"
-    },
-    {
-      "id": "e41933f0-fcc3-11e9-93d8-5bfa21e820bb",
-      "name": "nghe nhạc",
+      "id": "2d64a460-faf6-11e9-b3d2-e5a754a3a548",
+      "name": "Ăn đấm",
       "status": "hide"
     }
   ]
