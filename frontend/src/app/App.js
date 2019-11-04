@@ -4,13 +4,12 @@ import './App.css';
 import Main from './components/main';
 import Sidebar from './components/side';
 import Header from './components/header';
-import axios from 'axios';
-import qs from 'querystring';
-import { LIST_WORK_THUNK } from './actions/listWork';
+import { LIST_WORK_THUNK } from './actions/listWorkAction';
 
 const mapStateToProps = (state) => {
   return {
-    isSidePanelOpen: state.handleSidePanelReducer,
+    isSidePanelOpen: state.handleSidePanelReducer.isSidePanelOpen,
+    listWork: state.listWorkReducer.listWork,
   } 
 }
 
@@ -31,116 +30,45 @@ class App extends Component {
   //                        LOAD DATA
   // ------------------------------------------------------------------
   componentDidMount(){
-      this.props.renderListWork();
+      this.props.renderListWork({
+        currentPage: 1, 
+        isMin: true,
+        isMax: true,
+      });
   }
-
-
-// ------------------------------------------------------------------
-//                       HANDLE PAGINATION
-// ------------------------------------------------------------------
-  handlePagination = (event) => {
-    let totalPage;
-    (!this.state.isSearchMode) ? (totalPage = this.state.totalPageInit) : (totalPage = this.state.totalPage);
-    switch(event.target.id){
-      case("pagination-next"):
-        {
-          this.setState({
-            isMin: false,
-            currentPage: this.state.currentPage + 1
-          });
-          if(this.state.currentPage === totalPage - 1){
-            this.setState({isMax: true})
-          }
-          this.getListWorkFromApi(this.state.currentPage + 1);
-          break;
-        }
-        case("pagination-previous"):
-        {
-          this.setState({
-            isMax: false,
-            currentPage: this.state.currentPage - 1
-          });
-          if(this.state.currentPage === 2){
-            this.setState({
-                isMin: true
-            })
-          }
-          this.getListWorkFromApi(this.state.currentPage - 1);
-          break;
-        }
-    }
-  }
-// ------------------------------------------------------------------
-//                        CRUD WORK 
-// ------------------------------------------------------------------
-  deleteWork = async (event) => {
-    const {currentPage} = this.state;
-    this.setState({
-        isSearchMode: false
-    })
-    const id = event.target.parentNode.parentNode.id;
-    await axios({
-      method: 'delete',
-      url: 'http://localhost:8000/work/',
-      data: qs.stringify({id: id}),
-      headers: {
-        'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
-      }}).then((res) => console.log('Delete new work success !!! --> Message from Server: ', res.data.message))
-        .catch((err) => console.log(err))
-    // this.getListWorkFromApi(currentPage);
-  }
-  updateWork = (event) => {
-    this.controlSidePanel();
-    this.setState({ 
-        name: event.target.parentNode.parentNode.childNodes[1].innerText,
-        isSidePanelOpen: true,
-        isCreateWork: false,
-        isSearchMode: false
-     });
-     sessionStorage.setItem("id", event.target.parentNode.parentNode.id);
-  }
-  updateWorkSubmit = async (data) => {
-    const {currentPage} = this.state;
-    const id = sessionStorage.getItem("id");
-    this.getListWorkFromApi(currentPage);
-    this.setState({
-            isSidePanelOpen: false,
-            isCreateWork: true});
-        sessionStorage.removeItem("id");
-    }
     // ------------------------------------------------------------------
     //                        SEARCH WORK 
     // ------------------------------------------------------------------
-    getPrimarySearchInformation = (event) => {
-      const {totalPageInit} = this.state;
-      this.setState({
-          searchInputValue: event.target.value,
-          isSearchMode: false,
-          totalPage: totalPageInit
-       });
-    }
-    primarySearch = (event) => {
-      const {listWork, searchInputValue, listWorkSearch} = this.state;
-      event.preventDefault();
-      this.setState({
-            isSearchMode: true,
-            listWorkSearch: listWork.filter((el) => el.name.includes(searchInputValue)),
-            totalPage: (Math.ceil(listWorkSearch.length/9) === 0) ? 1 : Math.ceil(listWorkSearch.length/9)
-        });
-    }
+    // getPrimarySearchInformation = (event) => {
+    //   const {} = this.state;
+    //   this.setState({
+    //       searchInputValue: event.target.value,
+    //       isSearchMode: false,
+    //       totalPage: 
+    //    });
+    // }
+    // primarySearch = (event) => {
+    //   const {listWork, searchInputValue, listWorkSearch} = this.state;
+    //   event.preventDefault();
+    //   this.setState({
+    //         isSearchMode: true,
+    //         listWorkSearch: listWork.filter((el) => el.name.includes(searchInputValue)),
+    //         totalPage: (Math.ceil(listWorkSearch.length/10) === 0) ? 1 : Math.ceil(listWorkSearch.length/10)
+    //     });
+    // }
     getSecondarySearchInformation = (event) => {
       const {
         listWork, 
         listWorkSearch, 
         searchInputValue, 
         totalPage, 
-        totalPageInit} = this.state;
+        } = this.state;
       if(event.target.value){
             this.setState({
               searchInputValue: event.target.value,
               isSearchMode: true,
               listWorkSearch: listWork.filter((el) => el.name.includes(searchInputValue)),
-              totalPage: (Math.ceil(listWorkSearch.length/9) === 0) ? 1 : Math.ceil(listWorkSearch.length/9)
+              totalPage: (Math.ceil(listWorkSearch.length/10) === 0) ? 1 : Math.ceil(listWorkSearch.length/10)
             })
             if(totalPage === 1) {
               this.setState({
@@ -151,14 +79,14 @@ class App extends Component {
             this.setState({
               searchInputValue: "",
               isSearchMode: false,
-              totalPage: totalPageInit ,
+              totalPage: '',
               isMax: false
             })
         }
     }
-    // ------------------------------------------------------------------
-    //                        SORT WORK 
-    // ------------------------------------------------------------------
+// ------------------------------------------------------------------
+//                        SORT WORK 
+// ------------------------------------------------------------------
 handleSorting = (event) => {
     this.setState({ 
         sortMode: event.target.value
@@ -201,14 +129,10 @@ componentDidUpdate(prevProps, prevState){
       isSearchMode, 
       listWorkSearch, 
       isCreateWork} = this.state;
-    const MainPanel = <Main 
-                            onClick={this.handlePagination}
-                            onChange={this.handleSorting}
-                            getPrimarySearchInformation={this.getPrimarySearchInformation}
+    const MainPanel = <Main onChange={this.handleSorting}
                             getSecondarySearchInformation={this.getSecondarySearchInformation}
                             primarySearch={this.primarySearch}>
-                            {/* {(!isSearchMode) ? this.renderListWork() : this.renderListWork(listWorkSearch)}  */}
-                    </Main>
+                      </Main>
     return (
       <div className="container">
         <Header />
@@ -226,7 +150,6 @@ componentDidUpdate(prevProps, prevState){
                   <Sidebar 
                     onSubmit={(isCreateWork) ? this.createWork : this.updateWorkSubmit}
                     onChange={this.getWorkInformation}
-                    placeholder={(isCreateWork) ? "" : this.state.name}
                   />
                 </div>
                 <div className="col-8">

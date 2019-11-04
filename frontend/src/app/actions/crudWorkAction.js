@@ -1,5 +1,6 @@
 import axios from 'axios';
 import qs from 'querystring';
+import uuid from 'uuid/v1';
 
 const CREATE_WORK = "CREATE_WORK";
 const UPDATE_WORK = "UPDATE_WORK";
@@ -13,7 +14,7 @@ const createWork = (data) => {
         payload: {
             name: data.name,
             status: data.status,
-            message: "Create Work Successfully..."
+            message: "Create Work Successfully..." + uuid()
         }
     }
 }
@@ -28,7 +29,7 @@ export const CREATE_WORK_THUNK = (data) => {
               'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
             }}).then((res) => {
                 dispatch(createWork(data));
-                console.log(res.status);
+                console.log(res.data.message);
             }).catch((err) => {
                 dispatch(onError(err.message))
             })
@@ -43,7 +44,7 @@ const updateWork = (data) => {
             id: data.id,
             name: data.name,
             status: data.status,
-            message: "Update Work Successfully..."
+            message: "Update Work Successfully..." + data.id
         }
     }
 }
@@ -53,32 +54,47 @@ export const UPDATE_WORK_THUNK = (data) => {
         axios({
             method: 'put',
             url: 'http://localhost:8000/work/',
-            data: qs.stringify({
-                id: data.id,
-                name: data.name, 
-                status: data.status
-              }),
+            data: qs.stringify(data),
             headers: {
             'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
             }}).then((res) => {
                 dispatch(updateWork(data));
-                console.log(res.status);
+                console.log(res.data.message);
             }).catch((err) => {
                 dispatch(onError(err.message))
             })
     })
 }
 
+// DELETE WORK-------------------------
 const deleteWork = (data) => {
     return{
         type: DELETE_WORK,
         payload: {
             id: data.id,
-            message: "Delete Work Successfully..."
+            message: "Delete Work Successfully..." + data.id
         }
     }
 }
 
+export const DELETE_WORK_THUNK = (data) => {
+    return ((dispatch) => {
+        axios({
+            method: 'delete',
+            url: 'http://localhost:8000/work/',
+            data: qs.stringify({id: data.id}),
+            headers: {
+              'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }}).then((res) => {
+                dispatch(deleteWork(data));
+                console.log(res.data.message);
+            }).catch((err) => {
+                dispatch(onError(err.message))
+            })
+    })
+}
+
+// ON ERROR-------------------------
 export const onError = (err) => {
     return{
         type: ERROR,

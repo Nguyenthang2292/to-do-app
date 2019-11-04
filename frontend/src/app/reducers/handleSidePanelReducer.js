@@ -1,11 +1,17 @@
-const initialState = false;
+const initialState = {
+    isCreateWork: true,
+    isSidePanelOpen: false
+};
 
 const handleSidePanelReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'SWITCH_PANEL':
-            return !state;
+            const switchPanel = {
+                isSidePanelOpen: !action.payload.isSidePanelOpen
+            }
+            return {...state, ...action.payload, ...switchPanel}
         case 'CLOSE_PANEL':
-            return state = false;
+            return {...state, isSidePanelOpen: false, isCreateWork: true};
         default:
             return state;
     }

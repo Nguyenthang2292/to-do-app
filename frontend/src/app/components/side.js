@@ -1,21 +1,23 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {CREATE_WORK_THUNK} from '../actions/crudWork';
-import {LIST_WORK_THUNK} from '../actions/listWork';
+import {CREATE_WORK_THUNK, UPDATE_WORK_THUNK} from '../actions/crudWorkAction';
+import {LIST_WORK_THUNK} from '../actions/listWorkAction';
+import {closePanel} from '../actions/handleSidePanelAction';
 
 const mapStateToProps = (state) => {
     return {
-        isCreateWork: state.crudWorkReducer.isCreateWork,
-        currentPage: state.listWorkReducer.currentPage
+        isCreateWork: state.handleSidePanelReducer.isCreateWork,
+        currentPage: state.listWorkReducer.currentPage,
+        message: state.crudWorkReducer.message
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-      closeSidePanel: () => dispatch({ type: 'CLOSE_PANEL'}),
-      createWork: (data) => dispatch(CREATE_WORK_THUNK(data)),
-      updateWork: () => dispatch({type: "UPDATE_WORK"}),
-      renderListWork: (data) => dispatch(LIST_WORK_THUNK(data))
+        createWork: (data) => dispatch(CREATE_WORK_THUNK(data)),
+        updateWork: (data) => dispatch(UPDATE_WORK_THUNK(data)),
+        closeSidePanel: (data) => dispatch(closePanel(data)),
+        renderListWork: (data) => dispatch(LIST_WORK_THUNK(data))
     }
   }
 
@@ -23,8 +25,6 @@ class Sidebar extends Component {
     state = {
         name: '',
         status: "show",
-        isCreateWork: this.props.isCreateWork,
-        currentPage: this.props.currentPage,
     }
     getWorkInformation = (event) => {
         this.setState({
@@ -32,16 +32,31 @@ class Sidebar extends Component {
         });
       }
     onSubmit = (event) => {
-        const {name, status, isCreateWork} = this.state;
+        const {name, status} = this.state;
         event.preventDefault();
-        if (isCreateWork) {
+        if (this.props.isCreateWork) {
             this.props.createWork({
                 name: name, 
                 status: status});
-            this.props.renderListWork({currentPage: this.state.currentPage});
         } else {
-            this.props.updateWork();
+            const user = {
+                id: sessionStorage.getItem("id"),
+                name: (name) ? name: sessionStorage.getItem("name"),
+                status: status,
+            }
+     
+        this.props.updateWork(user);
+        sessionStorage.clear();
         }
+        this.props.closeSidePanel({isSidePanelOpen: false});
+    }
+    componentDidUpdate(prevProps, prevState){
+        if(prevProps.message !== this.props.message){
+            this.props.renderListWork({ currentPage: this.props.currentPage})
+        }
+    }
+    clsPanel = () => {
+        this.props.closeSidePanel({isSidePanelOpen: false});
     }
     render(){
         return(
@@ -52,7 +67,7 @@ class Sidebar extends Component {
                     className="fas fa-times-circle float-right" 
                     style={{lineHeight: '24px'}}
                     id="close-button"
-                    onClick={this.props.closeSidePanel}></i>
+                    onClick={this.clsPanel}></i>
                 </div>
                 <form className="card-body" onSubmit={this.onSubmit}>
                     <div className="form-group">
@@ -62,7 +77,7 @@ class Sidebar extends Component {
                         className="form-control" 
                         id="name"
                         onChange={this.getWorkInformation}
-                        placeholder={this.props.placeholder}
+                        placeholder={(this.props.isCreateWork) ? "" : sessionStorage.getItem("name")}
                         />
                     </div>
                     <div className="form-group">
@@ -80,7 +95,7 @@ class Sidebar extends Component {
                            <i className="fas fa-plus"></i>
                             &nbsp;&nbsp;Lưu lại
                         </button>
-                        <button type="button" className="btn btn-secondary" onClick={this.props.closeSidePanel}>
+                        <button type="button" className="btn btn-secondary" onClick={this.clsPanel}>
                             <i className="fas fa-times"></i>
                             &nbsp;&nbsp;Hủy Bỏ
                         </button>

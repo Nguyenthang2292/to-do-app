@@ -23,9 +23,5 @@
 
 #close-button:hover {
   color: grey;
-}
-
-.pagination{
-  position: fixed;
-  bottom: 0px;
+  cursor: pointer;
 }
