@@ -16,6 +16,8 @@ Version 1.1 (1/11/2019)
 
 Version 1.2 (4/11/2019)
 - Back-end: Tăng tốc độ truy xuất bằng Redis
+{start-server-cache: sudo service redis-server start}
+{default-port: 6379}
 
 Version 2.0 (... tương lai)
 - Bổ sung chức năng Authentication / Authorization
