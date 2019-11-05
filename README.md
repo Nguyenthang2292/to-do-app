@@ -29,7 +29,7 @@ Version 2.0 (... tương lai)
 <img src="https://user-images.githubusercontent.com/49454154/68199558-d60e3500-fff0-11e9-8c5e-08c49c213088.jpg" alt="front-end" />
 
 <h3>Back-End Diagram</h3>
-<img src="https://user-images.githubusercontent.com/49454154/68201833-1e2f5680-fff5-11e9-9066-3f8b3beba8ce.jpg" alt="back-end"/>
+<img src="https://user-images.githubusercontent.com/49454154/68202409-43709480-fff6-11e9-85e4-f44a8b447d30.jpg" alt="back-end"/>
 
 
 
