@@ -1,7 +1,7 @@
 # to-do-app
 CRUD Work App
 
-<h4>Yêu cầu</h4>
+<h3>Yêu cầu</h3>
 - Cài đặt npm install / redis server
 
 Version 1.0
@@ -25,9 +25,11 @@ Version 1.2 (4/11/2019)
 Version 2.0 (... tương lai)
 - Bổ sung chức năng Authentication / Authorization
 
-<h1>Front-End Diagram</h1>
+<h3>Front-End Diagram</h3>
 <img src="https://user-images.githubusercontent.com/49454154/68199558-d60e3500-fff0-11e9-8c5e-08c49c213088.jpg" alt="front-end" />
 
+<h3>Back-End Diagram</h3>
+<img src="https://user-images.githubusercontent.com/49454154/68201669-c55fbe00-fff4-11e9-9184-65857d49d577.jpg" />
 
 
 
