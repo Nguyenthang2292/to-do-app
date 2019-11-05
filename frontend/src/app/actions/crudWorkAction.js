@@ -12,8 +12,6 @@ const createWork = (data) => {
     return {
         type: CREATE_WORK,
         payload: {
-            name: data.name,
-            status: data.status,
             message: "Create Work Successfully..." + uuid()
         }
     }
@@ -41,9 +39,6 @@ const updateWork = (data) => {
     return {
         type: UPDATE_WORK,
         payload: {
-            id: data.id,
-            name: data.name,
-            status: data.status,
             message: "Update Work Successfully..." + data.id
         }
     }
@@ -71,7 +66,6 @@ const deleteWork = (data) => {
     return{
         type: DELETE_WORK,
         payload: {
-            id: data.id,
             message: "Delete Work Successfully..." + data.id
         }
     }

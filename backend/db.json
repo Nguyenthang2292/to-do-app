@@ -1,13 +1,8 @@
 {
   "works": [
     {
-      "id": "9b60dd60-fbc0-11e9-83ad-b7ea5624fab7",
-      "name": "Học bài",
-      "status": "hide"
-    },
-    {
       "id": "89a46b00-fc83-11e9-9eab-dbacfe71e563",
-      "name": "đi ăn lẩu",
+      "name": "đi uống rượu",
       "status": "show"
     },
     {
@@ -36,28 +31,18 @@
       "status": "hide"
     },
     {
-      "id": "550f7b10-ffa7-11e9-9788-97ddfae14c93",
-      "name": "Đi tắm",
+      "id": "747d6c80-ffae-11e9-ae52-f92ecea5385c",
+      "name": "dsvsdv",
       "status": "show"
     },
     {
-      "id": "4a625d50-faf6-11e9-b3d2-e5a754a3a548",
-      "name": "he he he",
+      "id": "7591c2b0-ffae-11e9-ae52-f92ecea5385c",
+      "name": "sdvsdv",
       "status": "show"
     },
     {
-      "id": "9a3c1180-ffa7-11e9-9788-97ddfae14c93",
-      "name": "Lái xe",
-      "status": "show"
-    },
-    {
-      "id": "30f76810-faf6-11e9-b3d2-e5a754a3a548",
-      "name": "Làm việc",
-      "status": "hide"
-    },
-    {
-      "id": "9e11aa90-ffa7-11e9-9788-97ddfae14c93",
-      "name": "Nhảy",
+      "id": "ee340610-ffae-11e9-abc1-a7dcf0a2ab96",
+      "name": "fsdfsd",
       "status": "show"
     }
   ]

@@ -40,6 +40,7 @@ module.exports = {
                 data: null
             });
         } catch(err) {
+            console.log('An error Occur on controller...');
             next(err);
         }
     }),
@@ -49,9 +50,6 @@ module.exports = {
         try{
             const listWorkGetFromDatabase = db.get('works')
                             .value()
-            const listWorkGetFromDatabaseLength = db.get('works')
-                                    .size()
-                                    .value()
             let listWork = listWorkGetFromDatabase;
             let totalPage;
             switch(req.query.type) {
@@ -108,7 +106,7 @@ module.exports = {
                 })
             }
         } catch(err) {
-            console.log(err);
+            console.log('An error Occur on controller...');
             next(err);
         }
     }),
@@ -125,6 +123,7 @@ module.exports = {
                 data: null
             });
         } catch(err){
+            console.log('An error Occur on controller...');
             next(err);
         }
     }),
@@ -139,6 +138,7 @@ module.exports = {
                 data: null
             });
         } catch(err) {
+            console.log('An error Occur on controller...');
             next(err);
         }
     })

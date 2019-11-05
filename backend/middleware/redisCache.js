@@ -7,7 +7,6 @@ function getTotalPage(length){
 
 module.exports = {
     redisCache: function(request,response,next){
-        console.log(request.body);
         if(request.method !== 'GET'){
             client.del("type");
             next();
@@ -32,7 +31,6 @@ module.exports = {
                                         listWork = JSON.parse(work);
                                         listWork = listWork.filter((el) => el.name.includes(request.query.searchValue));
                                         break;
-
                                     case "sort":
                                         listWork = JSON.parse(work);
                                         switch (request.query.sortValue) {
@@ -67,6 +65,9 @@ module.exports = {
                             });
                     }
                 })
-        } catch (err) {next()}
+        } catch (err) {
+            console.log('An error Occur on Cache Middleware...');
+            next();
+        }
     }
 }
