@@ -1,6 +1,9 @@
 # to-do-app
 CRUD Work App
 
+<h4>Yêu cầu</h4>
+- Cài đặt npm install / redis server
+
 Version 1.0
 - Back-end: Nodejs/ExpressJs/Lowdb - {start-server: ~/backend/nodemon index}
 - Front-end: React - {start-server: ~/frontend/npm start}
