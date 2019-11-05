@@ -22,6 +22,7 @@ Version 1.2 (4/11/2019)
 Version 2.0 (... tương lai)
 - Bổ sung chức năng Authentication / Authorization
 
+<h1>Front-End Diagram</h1>
 <img src="https://user-images.githubusercontent.com/49454154/68199558-d60e3500-fff0-11e9-8c5e-08c49c213088.jpg" alt="front-end" />
 
 
