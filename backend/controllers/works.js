@@ -10,15 +10,18 @@ const db = low(adapter);
 db.defaults({works: []})
   .write()
 
-function setRedis(initialArr, type, totalPage){
+function setRedis(initialArr, type){
     try {
-        client.set("type", type);
-        client.set("totalPage", totalPage);
         client.set("data:work", JSON.stringify(initialArr));
+        client.set("type", type);
         console.log('Set Redis cache Successfully...');
     } catch (err){
         console.log("Oop have an Error Occur.... " + err);
     }
+}
+
+function getTotalPage(length){
+    return (length <= 10) ? 1 : Math.ceil(length/10);
 }
 
 module.exports = {
@@ -40,23 +43,49 @@ module.exports = {
             next(err);
         }
     }),
-    listQueryPage: ((req,res,next) => {
+    listWork: ((req,res,next) => {
         let begin = (parseInt(req.query.page)-1)*10;
         let end = (parseInt(req.query.page)-1)*10 + 10;
         try{
-            const listWork = db.get('works')
+            const listWorkGetFromDatabase = db.get('works')
                             .value()
-            const listWorkLength = db.get('works')
+            const listWorkGetFromDatabaseLength = db.get('works')
                                     .size()
                                     .value()
+            let listWork = listWorkGetFromDatabase;
             let totalPage;
-            if(listWorkLength <= 10){
-                totalPage = 1;
-            } else {
-                totalPage = Math.ceil(listWorkLength/10);
+            switch(req.query.type) {
+                case "search":
+                    listWork = listWorkGetFromDatabase.filter((el) => el.name.includes(req.query.searchValue));
+                    setRedis(listWorkGetFromDatabase, "search");
+                    break;
+                case "sort":
+                        switch (req.query.sortValue) {
+                            case("increase"):
+                                listWork = listWorkGetFromDatabase.sort((a,b) => a.name.localeCompare(b.name));
+                                break;
+                            case("decrease"):
+                                listWork = listWorkGetFromDatabase.sort((a,b) => b.name.localeCompare(a.name));
+                               break;
+                            case("isActive"):
+                                listWork = [...listWorkGetFromDatabase.filter((el) => el.status === "show").sort((a,b) =>  a.name.localeCompare(b.name)),
+                                ...listWorkGetFromDatabase.filter((el) => el.status === "hide").sort((a,b) =>  a.name.localeCompare(b.name))];
+                               break;
+                            case("isDisable"):
+                                listWork = [...listWorkGetFromDatabase.filter((el) => el.status === "hide").sort((a,b) =>  a.name.localeCompare(b.name)),
+                                ...listWorkGetFromDatabase.filter((el) => el.status === "show").sort((a,b) =>  a.name.localeCompare(b.name))];
+                                break;
+                            default: 
+                                listWork = listWorkGetFromDatabase;
+                            }
+                    setRedis(listWorkGetFromDatabase, "sort");
+                    break;
+                default:
+                    setRedis(listWorkGetFromDatabase, "list");
+                    break;
             }
-            setRedis(listWork, req.query.type, totalPage.toString());
-            if(listWorkLength <= 10) {
+            totalPage = getTotalPage(listWork.length);
+            if(totalPage === 1) {
                 res.json({
                     status: "success",
                     message: "Work list found!!!",
@@ -79,107 +108,7 @@ module.exports = {
                 })
             }
         } catch(err) {
-            next(err);
-        }
-    }),
-    listFilterSearch: ((req,res,next) => {
-        let begin = (parseInt(req.query.page)-1)*10;
-        let end = (parseInt(req.query.page)-1)*10 + 10;
-        try{
-            const listWork = db.get('works')
-                            .value()
-            const listWorkFilterSearch = listWork.filter((el) => el.name.includes(req.query.searchValue));
-            const listWorkLength = listWorkFilterSearch.length;
-            let totalPage;
-            if(listWorkLength <= 10){
-                totalPage = 1;
-            } else {
-                totalPage = Math.ceil(listWorkLength/10);
-            }
-            setRedis(listWorkFilterSearch, req.query.type, totalPage.toString());
-            if(listWorkLength <= 10) {
-                res.json({
-                    status: "success",
-                    message: "Work list found!!!",
-                    data: {
-                        dataSource: "server",
-                        totalPage: 1,
-                        listWorkArr: listWorkFilterSearch
-                    }
-                })
-            } else {
-                listWorkFilterSearch = Object.keys(listWorkFilterSearch).map(item => listWorkFilterSearch[item]).slice(begin, end);
-                res.json({
-                    status: "success",
-                    message: "Work list found!!!",
-                    data: {
-                        dataSource: "server",
-                        totalPage: Math.ceil(listWorkLength/10),
-                        listWorkArr: listWorkFilterSearch
-                    }
-                })
-            }
-        } catch(err) {
-            next(err);
-        }
-    }),
-    listFilterSort: ((req,res,next) => {
-        let begin = (parseInt(req.query.page)-1)*10;
-        let end = (parseInt(req.query.page)-1)*10 + 10;
-        try{
-            let listWork = db.get('works')
-                            .value()
-            switch (req.query.sortValue) {
-            case("increase"):
-                listWork = listWork.sort((a,b) => a.name.localeCompare(b.name));
-                break;
-            case("decrease"):
-                listWork = listWork.sort((a,b) => b.name.localeCompare(a.name));
-               break;
-            case("isActive"):
-                listWork = [...listWork.filter((el) => el.status === "show").sort((a,b) =>  a.name.localeCompare(b.name)),
-                ...listWork.filter((el) => el.status === "hide").sort((a,b) =>  a.name.localeCompare(b.name))];
-               break;
-            case("isDisable"):
-                listWork = [...listWork.filter((el) => el.status === "hide").sort((a,b) =>  a.name.localeCompare(b.name)),
-                ...listWork.filter((el) => el.status === "show").sort((a,b) =>  a.name.localeCompare(b.name))];
-                break;
-            default: 
-                listWork = listWork;
-            }
-            const listWorkLength = listWork.length;
-            let totalPage;
-            if(listWorkLength <= 10){
-                totalPage = 1;
-            } else {
-                totalPage = Math.ceil(listWorkLength/10);
-            }
-            setRedis(listWork, req.query.type, totalPage.toString());
-            if(listWorkLength <= 10) {
-                setRedis(listWork, req.query.type, req.query.page, "1");
-                res.json({
-                    status: "success",
-                    message: "Work list found!!!",
-                    data: {
-                        dataSource: "server",
-                        totalPage: 1,
-                        listWorkArr: listWork
-                    }
-                })
-            } else {
-                listWork = Object.keys(listWork).map(item => listWork[item]).slice(begin, end);
-                setRedis(listWork, req.query.type, req.query.page, Math.ceil(listWorkLength/10).toString());
-                res.json({
-                    status: "success",
-                    message: "Work list found!!!",
-                    data: {
-                        dataSource: "server",
-                        totalPage: Math.ceil(listWorkLength/10),
-                        listWorkArr: listWork
-                    }
-                })
-            }
-        } catch(err) {
+            console.log(err);
             next(err);
         }
     }),

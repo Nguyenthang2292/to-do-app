@@ -14,24 +14,22 @@ const listWork = (data) => {
 }
 
 export const LIST_WORK_THUNK = (data) => {
-    let url, params;
+    let params;
+    let url = 'http://localhost:8000/work/';
     switch (data.isMode) {
         case "search":
-            url = 'http://localhost:8000/work/search';
             params = {
                 type: "search",
                 page: data.currentPage, 
                 searchValue: data.searchInputValue};
             break;
         case "sort":
-            url = 'http://localhost:8000/work/sort';
             params = {
                 type: "sort",
                 page: data.currentPage, 
                 sortValue: data.sortValue};
             break;
         default:
-            url = 'http://localhost:8000/work/';
             params = {
                 type: "list",
                 page: data.currentPage};
