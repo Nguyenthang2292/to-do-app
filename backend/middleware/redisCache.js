@@ -10,6 +10,7 @@ module.exports = {
         if(request.method !== 'GET'){
             client.del("type");
             next();
+            return;
         }
         try {
             client.get("type", (err,res) => {

@@ -1,46 +1,36 @@
-const express = require('express');
-const app = express();
-const PORT = 8000;
-const works = require('./routes/works');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const redis = require('redis');
-
-//-------------------------Redis Cached-------------------------
-
-const client = redis.createClient(6379);
-client.on('connect', (req,res)=> {
-  console.log('Connect to redis...');
+const cluster = require('cluster');
+const os = require('os');
+const numCPUs = os.cpus().length;
+const runServer = require('./app');
+const boxen = require('boxen');
+const chalk = require('chalk');
+const Table = require('cli-table3');
+let table = new Table({
+    chars: { 'top': '═' , 'top-mid': '╤' , 'top-left': '╔' , 'top-right': '╗'
+         , 'bottom': '═' , 'bottom-mid': '╧' , 'bottom-left': '╚' , 'bottom-right': '╝'
+         , 'left': '║' , 'left-mid': '╟' , 'mid': '─' , 'mid-mid': '┼'
+         , 'right': '║' , 'right-mid': '╢' , 'middle': '│' }
 });
 
-client.on('error', (err) => {
-  console.log("Error" + err);
-});
+if (cluster.isMaster) {
+    console.log(chalk.yellow("Master process") + boxen(chalk.bgGreen.black(`${process.pid}`), {padding: 1, margin: 1, borderStyle: 'classic', borderColor: "green"}) + chalk.yellow("is running................."));
+    // Fork workers.
+    for (let i = 0; i < numCPUs; i++) {
+      cluster.fork();
+      table.push({
+            "Worker process": [chalk.yellow("-----------[" + cluster.workers[i+1].process.pid + "]-----------"), i+1,  chalk.bgBlue("is running"), os.cpus()[i].model]
+        })
+    }
 
+    console.log(table.toString());
 
-//-------------------------Body Parser-------------------------
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(cors());
-
-app.listen(PORT, ()=> console.log(`Simple Backend running on Port ${PORT}`));
-
-app.get('/', (req,res) => res.json({message: "OK"}));
-
-app.use('/work', works);
-
-
-//handle 404 
-app.use((req,res,next) => {
-  let err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
-
-//handle erros Middleware
-app.use((err, req, res, next) => {
-  if(err.status === 404){
-      res.status(404).json({message: "Not found"});
-  } else {
-      res.status(500).json({message: "Something looks wrong"})
-  }
-});
+    cluster.on('exit', (worker, code, signal) => {
+      console.log(`worker ${worker.process.pid} died`);
+    });
+  } else { runServer() }
+ 
+cluster.on('exit', (Worker) => {
+    console.log(`Worker ${Worker.id} died`);
+    console.log('Starting a new one...');
+    cluster.fork();
+})

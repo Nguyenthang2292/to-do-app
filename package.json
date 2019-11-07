@@ -4,17 +4,25 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "cd ./backend && nodemon index"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "boxen": "^4.1.0",
+    "chalk": "^2.4.2",
+    "cli-table3": "^0.5.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "import-jsx": "^3.0.0",
     "lowdb": "^1.0.0",
+    "mongoose": "^5.7.8",
     "nodemon": "^1.19.4",
+    "react": "^16.11.0",
     "redis": "^2.8.0",
+    "response-time": "^2.3.2",
     "uuid": "^3.3.3"
-  }
+  },
+  "devDependencies": {}
 }
